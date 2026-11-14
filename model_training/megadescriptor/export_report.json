@@ -1,0 +1,31 @@
+{
+  "source": "BVRA/MegaDescriptor-L-384",
+  "revision": "33b3c6f4ee0c386a4126cc3dcd23843920613fa1",
+  "architecture": "swin_large_patch4_window12_384",
+  "parameters": 195198516,
+  "input": [
+    1,
+    3,
+    384,
+    384
+  ],
+  "output": [
+    1,
+    1536
+  ],
+  "mean": [
+    0.5,
+    0.5,
+    0.5
+  ],
+  "std": [
+    0.5,
+    0.5,
+    0.5
+  ],
+  "preprocessing": "RGB, bilinear resize 384x384, ToTensor /255, normalize .5/.5",
+  "license": "CC-BY-NC-4.0 (Hugging Face model card)",
+  "export_seconds": 39,
+  "opset": 17,
+  "source_checkpoint_sha256": "ccfe757f50f7984a115ffe00921cd4c09e260e645215463b23814586040227a3"
+}

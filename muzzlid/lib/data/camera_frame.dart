@@ -25,9 +25,23 @@ Map<String, dynamic> processCameraFrame(Map<String, dynamic> input) {
       vPixel = vp['pixel'] as int;
   final uprightWidth = rotation % 180 == 0 ? width : height,
       uprightHeight = rotation % 180 == 0 ? height : width;
-  final left = (uprightWidth * .125).round(),
-      top = (uprightHeight * .4).round();
-  final w = (uprightWidth * .75).round(), h = (uprightHeight * .45).round();
+  final roi = input['roi'] as Map?;
+  final rx = (roi?['x'] as num?)?.toDouble() ?? .125;
+  final ry = (roi?['y'] as num?)?.toDouble() ?? .4;
+  final rw = (roi?['width'] as num?)?.toDouble() ?? .75;
+  final rh = (roi?['height'] as num?)?.toDouble() ?? .45;
+  if (![rx, ry, rw, rh].every((v) => v.isFinite) ||
+      rx < 0 ||
+      ry < 0 ||
+      rw <= 0 ||
+      rh <= 0 ||
+      rx + rw > 1.000001 ||
+      ry + rh > 1.000001) {
+    throw ArgumentError('Invalid camera ROI');
+  }
+  final left = (uprightWidth * rx).round(), top = (uprightHeight * ry).round();
+  final w = (uprightWidth * rw).round().clamp(3, uprightWidth - left),
+      h = (uprightHeight * rh).round().clamp(3, uprightHeight - top);
   // Source origin and direction vectors; avoids allocating coordinate pairs
   // inside the pixel loops and uses the same guide as the portrait preview.
   final (startX, startY, dxX, dxY, dyX, dyY) = switch (rotation) {

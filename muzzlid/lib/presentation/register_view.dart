@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../domain/register.dart';
 import 'strings.dart';
 import 'ui_parts.dart';
-import 'enrol_screen.dart';
+import 'registration_screen.dart';
 import 'profile_screen.dart';
 
 class RegisterView extends ConsumerStatefulWidget {
@@ -83,8 +83,9 @@ class _RegisterViewState extends ConsumerState<RegisterView> {
                             onPressed: () => Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (_) => const EnrolScreen())),
-                            child: Text(tr(ref, 'Enrol animal'))));
+                                    builder: (_) =>
+                                        const RegistrationScreen())),
+                            child: Text(tr(ref, 'Register animal'))));
                   }
                   final a = matches[index - 1];
                   return Card(
@@ -92,8 +93,10 @@ class _RegisterViewState extends ConsumerState<RegisterView> {
                       child: ListTile(
                           leading: animalPhoto(a),
                           title: Text(a.id, overflow: TextOverflow.ellipsis),
-                          subtitle: Text(
-                              '${a.owner}\n${a.location.isEmpty ? a.gps?.label ?? '' : a.location} · ${day(a.created)}'),
+                          subtitle: Text([
+                            a.owner,
+                            if (a.location.isNotEmpty) a.location
+                          ].join('\n')),
                           isThreeLine: true,
                           trailing: badge(tr(
                               ref,

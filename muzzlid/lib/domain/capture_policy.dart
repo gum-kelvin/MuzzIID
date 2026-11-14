@@ -82,7 +82,7 @@ class CapturePolicy {
 /// Samples five valid frames over 1.5 seconds. The source must submit every
 /// analysed frame: invalid frames reset the burst even between sampling times.
 /// Timestamps are monotonic camera timestamps, never wall-clock time.
-class EnrolmentBurst {
+class RegistrationBurst {
   final List<int> _times = [];
   int? _lastFrame;
   int get count => _times.length;

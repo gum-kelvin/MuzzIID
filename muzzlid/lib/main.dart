@@ -3,9 +3,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'presentation/screens.dart';
-import 'presentation/enrol_screen.dart';
+import 'presentation/registration_screen.dart';
 
-import 'presentation/pre_scan_screen.dart';
+import 'presentation/scanner_screen.dart';
 import 'presentation/state.dart';
 import 'presentation/luganda_material.dart';
 import 'package:flutter/services.dart';
@@ -19,9 +19,12 @@ Future<void> main() async {
 final router = GoRouter(
   routes: [
     GoRoute(path: '/', builder: (context, state) => const FieldScreen()),
-    GoRoute(path: '/enrol', builder: (context, state) => const EnrolScreen()),
     GoRoute(
-        path: '/verify', builder: (context, state) => const PreScanScreen()),
+        path: '/register-animal',
+        builder: (context, state) => const RegistrationScreen()),
+    GoRoute(
+        path: '/verify',
+        builder: (context, state) => const ScannerScreen(registration: false)),
   ],
 );
 

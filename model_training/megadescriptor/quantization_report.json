@@ -1,0 +1,6 @@
+{
+  "method": "ONNX Runtime dynamic W8 per-channel MatMul/Gemm, float activations between operators",
+  "seconds": 47,
+  "fp32_bytes": 837189898,
+  "runtime_bytes": 254701330
+}

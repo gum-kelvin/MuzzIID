@@ -67,7 +67,7 @@ if ! adb -s "$android_test_device" shell pidof com.example.muzzlid; then
 fi
 adb -s "$android_test_device" exec-out screencap -p > test-results/android-launch.png
 mkdir -p "test-results/screens/$android_test_device"
-for android_ui_shot in field enrol-review receipt register profile settings-luganda camera-device; do
+for android_ui_shot in field registration-review receipt register profile settings-luganda camera-device; do
   adb -s "$android_test_device" exec-out run-as com.example.muzzlid cat "files/ui-test-screenshots/$android_ui_shot.png" > "test-results/screens/$android_test_device/$android_ui_shot.png"
 done
 echo 'Automated checks completed. See docs/ANDROID_CLIENT_TESTING.md for remaining manual checks.'

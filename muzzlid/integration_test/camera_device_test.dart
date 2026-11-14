@@ -66,7 +66,7 @@ void main() {
           final embedding = await engine.embed(
               base64Encode(jpeg), modelStatus['version'] as String);
           embeddingMs = embeddingTimer.elapsedMilliseconds;
-          expect(embedding, hasLength(512));
+          expect(embedding, hasLength(modelStatus['dimensions'] as int));
           expect(embedding.fold<double>(0, (sum, v) => sum + v * v),
               closeTo(1, .0001));
         }
@@ -95,10 +95,10 @@ void main() {
     debugPrint(
         'DEVICE GPS: timestamp valid, accuracy ${fix.accuracy.round()} m');
   });
-  testWidgets('real scanner survives pause and completes five gated frames',
+  testWidgets(
+      'five independent photos preserve progress across pause without checkboxes',
       (tester) async {
     List<String>? captured;
-    Duration? collectionDuration;
     await tester.pumpWidget(ProviderScope(
         overrides: [
           languageProvider
@@ -112,60 +112,74 @@ void main() {
                           captured = await Navigator.push<List<String>>(
                               context,
                               MaterialPageRoute(
-                                  builder: (_) => ScannerScreen(
-                                      initialClean: true,
-                                      onBurstTiming: (duration) =>
-                                          collectionDuration = duration)));
+                                  builder: (_) => const ScannerScreen()));
                         },
                         child: const Text('Open device scanner')))))));
     await tester.tap(find.text('Open device scanner'));
     await tester.pump(const Duration(milliseconds: 300));
-    final detectorAvailable = (await AndroidEmbeddingEngine.channel
-            .invokeMapMethod('detectorStatus'))?['ready'] ==
-        true;
-    if (detectorAvailable) {
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Use guided capture'));
-      await tester.pump();
+    expect(find.byType(CheckboxListTile), findsNothing);
+    bool shutterReady() {
+      final shutter = find.byKey(const ValueKey('capture-photo'));
+      return shutter.evaluate().isNotEmpty &&
+          tester.widget<IconButton>(shutter).onPressed != null;
     }
-    await tester.tap(find.byType(CheckboxListTile).last);
+
     Future<void> waitReady() async {
-      for (var i = 0;
-          i < 100 && find.text('Ready to capture').evaluate().isEmpty;
-          i++) {
+      for (var i = 0; i < 200 && !shutterReady(); i++) {
         await tester.pump(const Duration(milliseconds: 200));
       }
-      debugPrint(
-          'DEVICE SCANNER STATE: ${tester.widgetList<Text>(find.byType(Text)).map((t) => t.data).whereType<String>().join(' | ')}');
-      expect(find.text('Ready to capture'), findsOneWidget,
+      expect(shutterReady(), true,
           reason:
-              'The current camera scene should pass focus/exposure in the guided ROI');
+              'The live camera must reopen and pass quality before enabling the shutter.');
+      expect(find.text('Ready to capture'), findsOneWidget);
     }
 
     await waitReady();
-    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
-    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
-    await tester.pump(const Duration(milliseconds: 300));
-    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
-    // Hygiene/framing acknowledgements remain, but a partial burst resets.
-    await waitReady();
-    await binding.convertFlutterSurfaceToImage();
-    await tester.pump();
-    final directory = await getApplicationSupportDirectory();
-    final screenshots = Directory('${directory.path}/ui-test-screenshots');
-    await screenshots.create(recursive: true);
-    await File('${screenshots.path}/camera-device.png')
-        .writeAsBytes(await binding.takeScreenshot('camera-device'));
-    await tester.tap(find.byIcon(Icons.camera_alt));
-    for (var i = 0; i < 100 && captured == null; i++) {
-      await tester.pump(const Duration(milliseconds: 200));
+    expect(find.text('Photos 0 / 5'), findsOneWidget);
+    await tester.pump(const Duration(seconds: 1));
+    expect(captured, isNull); // No automatic burst or capture without a press.
+    for (var photo = 1; photo <= 5; photo++) {
+      await waitReady();
+      await tester.tap(find.byKey(const ValueKey('capture-photo')));
+      for (var i = 0; i < 150; i++) {
+        await tester.pump(const Duration(milliseconds: 200));
+        if (photo == 5
+            ? captured != null
+            : find.text('Photos $photo / 5').evaluate().isNotEmpty) {
+          break;
+        }
+      }
+      if (photo < 5) {
+        expect(captured, isNull);
+        expect(find.text('Photos $photo / 5'), findsOneWidget,
+            reason: tester
+                .widgetList<Text>(find.byType(Text))
+                .map((t) => t.data)
+                .whereType<String>()
+                .join(' | '));
+      }
+      if (photo == 1) {
+        tester.binding
+            .handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+        tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+        await tester.pump(const Duration(milliseconds: 300));
+        tester.binding
+            .handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+        await waitReady();
+        expect(find.text('Photos 1 / 5'), findsOneWidget);
+        await binding.convertFlutterSurfaceToImage();
+        await tester.pump();
+        final directory = await getApplicationSupportDirectory();
+        final screenshots = Directory('${directory.path}/ui-test-screenshots');
+        await screenshots.create(recursive: true);
+        await File('${screenshots.path}/camera-device.png')
+            .writeAsBytes(await binding.takeScreenshot('camera-device'));
+      }
     }
     expect(captured, hasLength(5));
-    expect(collectionDuration!.inMilliseconds, inInclusiveRange(1500, 2500));
-    debugPrint(
-        'DEVICE COLLECTION: ${collectionDuration!.inMilliseconds} ms for five valid raw frames');
+    expect(captured!.toSet(), hasLength(5));
     expect(tester.takeException(), isNull);
     debugPrint(
-        'DEVICE BURST: five actual CameraX crops collected after pause/resume');
+        'DEVICE PHOTOS: five distinct JPEGs, five separate presses, progress preserved after pause');
   });
 }

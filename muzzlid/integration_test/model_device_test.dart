@@ -9,11 +9,14 @@ import 'model_fixtures.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-  testWidgets('bundled research ONNX enrolment centroid and open-set decisions',
+  testWidgets(
+      'MegaDescriptor 1536-D registration centroid and open-set decisions',
       (tester) async {
     final engine = AndroidEmbeddingEngine();
     final info = await engine.status();
     expect(info['ready'], true);
+    expect(info['dimensions'], 1536);
+    expect(info['inputSize'], 384);
     expect(info['version'], baselineFixtureVersion,
         reason:
             'Regenerate smoke fixtures when replacing the bundled baseline.');

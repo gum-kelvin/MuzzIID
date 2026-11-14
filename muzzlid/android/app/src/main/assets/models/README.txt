@@ -1,5 +1,6 @@
-Bundled model: cattle-resnet50-arcface-research-v1.
-Frozen ImageNet ResNet50 + ArcFace-trained 512-D projection.
-See model_training/README.md, report.json and docs/MODEL_INTEGRATION.md at project root.
-Research baseline, not field-certified; see ATTRIBUTION.txt for data sources.
-The detector is not bundled; guided capture remains available.
+Active embedding model: BVRA/MegaDescriptor-L-384, INT8 ONNX mobile runtime.
+Input: float32 RGB [1,3,384,384], /255 then mean=.5/std=.5.
+Output: 1536 features, L2-normalized by the private native adapter.
+See model_card.json, ATTRIBUTION.txt and model_training/megadescriptor/.
+The previous 512-D ResNet templates are incompatible and are rebuilt from
+locally encrypted source images. No detector weights are bundled.

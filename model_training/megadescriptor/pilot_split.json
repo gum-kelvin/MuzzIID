@@ -1,0 +1,702 @@
+[
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_1200/cattle_1200_DJI_0188.jpg",
+    "identity": "cattle_1200",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_1200/cattle_1200_DJI_0190.jpg",
+    "identity": "cattle_1200",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_1200/cattle_1200_DSCF3984.jpg",
+    "identity": "cattle_1200",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_1200/cattle_1200_DSCF3985.jpg",
+    "identity": "cattle_1200",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_1200/cattle_1200_DSCF3986.jpg",
+    "identity": "cattle_1200",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_1200/cattle_1200_DSCF3987.jpg",
+    "identity": "cattle_1200",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_1200/cattle_1200_DSCF3988.jpg",
+    "identity": "cattle_1200",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_1900/cattle_1900_DSCF6804.jpg",
+    "identity": "cattle_1900",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_1900/cattle_1900_DSCF6805.jpg",
+    "identity": "cattle_1900",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_1900/cattle_1900_DSCF6806.jpg",
+    "identity": "cattle_1900",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_1900/cattle_1900_DSCF6807.jpg",
+    "identity": "cattle_1900",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_1900/cattle_1900_DSCF6808.jpg",
+    "identity": "cattle_1900",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_1900/cattle_1900_DSCF6809.jpg",
+    "identity": "cattle_1900",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_1900/cattle_1900_DSCF6810.jpg",
+    "identity": "cattle_1900",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2320/cattle_2320_DSCF1673.jpg",
+    "identity": "cattle_2320",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2320/cattle_2320_DSCF1674.jpg",
+    "identity": "cattle_2320",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2320/cattle_2320_DSCF1675.jpg",
+    "identity": "cattle_2320",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2320/cattle_2320_DSCF1676.jpg",
+    "identity": "cattle_2320",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2320/cattle_2320_DSCF1677.jpg",
+    "identity": "cattle_2320",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2320/cattle_2320_DSCF1678.jpg",
+    "identity": "cattle_2320",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2320/cattle_2320_DSCF1679.jpg",
+    "identity": "cattle_2320",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2600/cattle_2600_DSCF0890.jpg",
+    "identity": "cattle_2600",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2600/cattle_2600_DSCF0891.jpg",
+    "identity": "cattle_2600",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2600/cattle_2600_DSCF0892.jpg",
+    "identity": "cattle_2600",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2600/cattle_2600_DSCF0893.jpg",
+    "identity": "cattle_2600",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2600/cattle_2600_DSCF0894.jpg",
+    "identity": "cattle_2600",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2600/cattle_2600_DSCF0895.jpg",
+    "identity": "cattle_2600",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2600/cattle_2600_DSCF0896.jpg",
+    "identity": "cattle_2600",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_3100/cattle_3100_DSCF1687.jpg",
+    "identity": "cattle_3100",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_3100/cattle_3100_DSCF1688.jpg",
+    "identity": "cattle_3100",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_3100/cattle_3100_DSCF1689.jpg",
+    "identity": "cattle_3100",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_3100/cattle_3100_DSCF1690.jpg",
+    "identity": "cattle_3100",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_3100/cattle_3100_DSCF1691.jpg",
+    "identity": "cattle_3100",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_3100/cattle_3100_DSCF1692.jpg",
+    "identity": "cattle_3100",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_3100/cattle_3100_DSCF1693.jpg",
+    "identity": "cattle_3100",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_3832/cattle_3832_DSCF8656.jpg",
+    "identity": "cattle_3832",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_3832/cattle_3832_DSCF8657.jpg",
+    "identity": "cattle_3832",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_3832/cattle_3832_DSCF8658.jpg",
+    "identity": "cattle_3832",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_3832/cattle_3832_DSCF8659.jpg",
+    "identity": "cattle_3832",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_3832/cattle_3832_DSCF8660.jpg",
+    "identity": "cattle_3832",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_3832/cattle_3832_DSCF8661.jpg",
+    "identity": "cattle_3832",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_3832/cattle_3832_DSCF8662.jpg",
+    "identity": "cattle_3832",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_3842/cattle_3842_DSCF1605.jpg",
+    "identity": "cattle_3842",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_3842/cattle_3842_DSCF1609.jpg",
+    "identity": "cattle_3842",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_3842/cattle_3842_DSCF1610.jpg",
+    "identity": "cattle_3842",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_3842/cattle_3842_DSCF1611.jpg",
+    "identity": "cattle_3842",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_3842/cattle_3842_DSCF1612.jpg",
+    "identity": "cattle_3842",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_3842/cattle_3842_DSCF1613.jpg",
+    "identity": "cattle_3842",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_3842/cattle_3842_DSCF1614.jpg",
+    "identity": "cattle_3842",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_4339/cattle_4339_DSCF6832.jpg",
+    "identity": "cattle_4339",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_4339/cattle_4339_DSCF6833.jpg",
+    "identity": "cattle_4339",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_4339/cattle_4339_DSCF6834.jpg",
+    "identity": "cattle_4339",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_4339/cattle_4339_DSCF6835.jpg",
+    "identity": "cattle_4339",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_4339/cattle_4339_DSCF6836.jpg",
+    "identity": "cattle_4339",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_4339/cattle_4339_DSCF6837.jpg",
+    "identity": "cattle_4339",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_4339/cattle_4339_DSCF6838.jpg",
+    "identity": "cattle_4339",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_4451/cattle_4451_DSCF6857.jpg",
+    "identity": "cattle_4451",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_4451/cattle_4451_DSCF6858.jpg",
+    "identity": "cattle_4451",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_4451/cattle_4451_DSCF6859.jpg",
+    "identity": "cattle_4451",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_4451/cattle_4451_DSCF6860.jpg",
+    "identity": "cattle_4451",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_4451/cattle_4451_DSCF6861.jpg",
+    "identity": "cattle_4451",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_4451/cattle_4451_DSCF6862.jpg",
+    "identity": "cattle_4451",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_4451/cattle_4451_DSCF6863.jpg",
+    "identity": "cattle_4451",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_4551/cattle_4551_DSCF1284.jpg",
+    "identity": "cattle_4551",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_4551/cattle_4551_DSCF1285.jpg",
+    "identity": "cattle_4551",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_4551/cattle_4551_DSCF1286.jpg",
+    "identity": "cattle_4551",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_4551/cattle_4551_DSCF1287.jpg",
+    "identity": "cattle_4551",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_4551/cattle_4551_DSCF1288.jpg",
+    "identity": "cattle_4551",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_4551/cattle_4551_DSCF1289.jpg",
+    "identity": "cattle_4551",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_4551/cattle_4551_DSCF1290.jpg",
+    "identity": "cattle_4551",
+    "split": "calibration"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_0200/cattle_0200_DJI_0115.jpg",
+    "identity": "cattle_0200",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_0200/cattle_0200_DJI_0116.jpg",
+    "identity": "cattle_0200",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_0200/cattle_0200_DJI_0119.jpg",
+    "identity": "cattle_0200",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_0200/cattle_0200_DSCF3868.jpg",
+    "identity": "cattle_0200",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_0200/cattle_0200_DSCF3870.jpg",
+    "identity": "cattle_0200",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_0200/cattle_0200_DSCF3871.jpg",
+    "identity": "cattle_0200",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_0200/cattle_0200_DSCF3873.jpg",
+    "identity": "cattle_0200",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_0700/cattle_0700_DJI_0148.jpg",
+    "identity": "cattle_0700",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_0700/cattle_0700_DJI_0154.jpg",
+    "identity": "cattle_0700",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_0700/cattle_0700_DJI_0155.jpg",
+    "identity": "cattle_0700",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_0700/cattle_0700_DSCF3924.jpg",
+    "identity": "cattle_0700",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_0700/cattle_0700_DSCF3925.jpg",
+    "identity": "cattle_0700",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_0700/cattle_0700_DSCF3926.jpg",
+    "identity": "cattle_0700",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_0700/cattle_0700_DSCF3927.jpg",
+    "identity": "cattle_0700",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_0800/cattle_0800_DJI_0156.jpg",
+    "identity": "cattle_0800",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_0800/cattle_0800_DJI_0157.jpg",
+    "identity": "cattle_0800",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_0800/cattle_0800_DJI_0158.jpg",
+    "identity": "cattle_0800",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_0800/cattle_0800_DJI_0160.jpg",
+    "identity": "cattle_0800",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_0800/cattle_0800_DJI_0161.jpg",
+    "identity": "cattle_0800",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_0800/cattle_0800_DJI_0162.jpg",
+    "identity": "cattle_0800",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_0800/cattle_0800_DSCF3937.jpg",
+    "identity": "cattle_0800",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_0900/cattle_0900_DJI_0163.jpg",
+    "identity": "cattle_0900",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_0900/cattle_0900_DJI_0164.jpg",
+    "identity": "cattle_0900",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_0900/cattle_0900_DJI_0165.jpg",
+    "identity": "cattle_0900",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_0900/cattle_0900_DJI_0166.jpg",
+    "identity": "cattle_0900",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_0900/cattle_0900_DSCF3950.jpg",
+    "identity": "cattle_0900",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_0900/cattle_0900_DSCF3951.jpg",
+    "identity": "cattle_0900",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_0900/cattle_0900_DSCF3952.jpg",
+    "identity": "cattle_0900",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2500/cattle_2500_DSCF8959.jpg",
+    "identity": "cattle_2500",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2500/cattle_2500_DSCF8960.jpg",
+    "identity": "cattle_2500",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2500/cattle_2500_DSCF8961.jpg",
+    "identity": "cattle_2500",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2500/cattle_2500_DSCF8962.jpg",
+    "identity": "cattle_2500",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2500/cattle_2500_DSCF8963.jpg",
+    "identity": "cattle_2500",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2500/cattle_2500_DSCF8964.jpg",
+    "identity": "cattle_2500",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2500/cattle_2500_DSCF8965.jpg",
+    "identity": "cattle_2500",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2510/cattle_2510_DSCF1750.jpg",
+    "identity": "cattle_2510",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2510/cattle_2510_DSCF1751.jpg",
+    "identity": "cattle_2510",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2510/cattle_2510_DSCF1752.jpg",
+    "identity": "cattle_2510",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2510/cattle_2510_DSCF1753.jpg",
+    "identity": "cattle_2510",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2510/cattle_2510_DSCF1754.jpg",
+    "identity": "cattle_2510",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2510/cattle_2510_DSCF1755.jpg",
+    "identity": "cattle_2510",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2510/cattle_2510_DSCF1756.jpg",
+    "identity": "cattle_2510",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2710/cattle_2710_DSCF1735.jpg",
+    "identity": "cattle_2710",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2710/cattle_2710_DSCF1736.jpg",
+    "identity": "cattle_2710",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2710/cattle_2710_DSCF1737.jpg",
+    "identity": "cattle_2710",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2710/cattle_2710_DSCF1738.jpg",
+    "identity": "cattle_2710",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2710/cattle_2710_DSCF1739.jpg",
+    "identity": "cattle_2710",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2710/cattle_2710_DSCF1740.jpg",
+    "identity": "cattle_2710",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2710/cattle_2710_DSCF1741.jpg",
+    "identity": "cattle_2710",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2800/cattle_2800_DSCF1452.jpg",
+    "identity": "cattle_2800",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2800/cattle_2800_DSCF1453.jpg",
+    "identity": "cattle_2800",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2800/cattle_2800_DSCF1454.jpg",
+    "identity": "cattle_2800",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2800/cattle_2800_DSCF1455.jpg",
+    "identity": "cattle_2800",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2800/cattle_2800_DSCF1456.jpg",
+    "identity": "cattle_2800",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2800/cattle_2800_DSCF1457.jpg",
+    "identity": "cattle_2800",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_2800/cattle_2800_DSCF1458.jpg",
+    "identity": "cattle_2800",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_3802/cattle_3802_DSCF1543.jpg",
+    "identity": "cattle_3802",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_3802/cattle_3802_DSCF1544.jpg",
+    "identity": "cattle_3802",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_3802/cattle_3802_DSCF1545.jpg",
+    "identity": "cattle_3802",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_3802/cattle_3802_DSCF1546.jpg",
+    "identity": "cattle_3802",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_3802/cattle_3802_DSCF1547.jpg",
+    "identity": "cattle_3802",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_3802/cattle_3802_DSCF1548.jpg",
+    "identity": "cattle_3802",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_3802/cattle_3802_DSCF1549.jpg",
+    "identity": "cattle_3802",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_4347/cattle_4347_DSCF1391.jpg",
+    "identity": "cattle_4347",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_4347/cattle_4347_DSCF1392.jpg",
+    "identity": "cattle_4347",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_4347/cattle_4347_DSCF1393.jpg",
+    "identity": "cattle_4347",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_4347/cattle_4347_DSCF1394.jpg",
+    "identity": "cattle_4347",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_4347/cattle_4347_DSCF1395.jpg",
+    "identity": "cattle_4347",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_4347/cattle_4347_DSCF1396.jpg",
+    "identity": "cattle_4347",
+    "split": "test"
+  },
+  {
+    "file": "BeefCattle_Muzzle_Individualized/cattle_4347/cattle_4347_DSCF1397.jpg",
+    "identity": "cattle_4347",
+    "split": "test"
+  }
+]

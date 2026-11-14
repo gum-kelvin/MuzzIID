@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../domain/register.dart';
 import 'strings.dart';
 import 'ui_parts.dart';
-import 'enrol_screen.dart';
+import 'registration_screen.dart';
 import 'state.dart';
 
 class ReceiptScreen extends ConsumerWidget {
@@ -28,18 +28,17 @@ class ReceiptScreen extends ConsumerWidget {
         section(context, tr(ref, 'Receipt ID')),
         SelectableText(animal.receiptId),
         detail(Icons.person_outline, tr(ref, 'Owner name'), animal.owner),
-        detail(Icons.location_on_outlined, tr(ref, 'Location'),
-            '${animal.location}\n${animal.gps?.label ?? ''}'),
-        detail(Icons.schedule, tr(ref, 'Recorded'), stamp(animal.created)),
+        detail(
+            Icons.location_on_outlined, tr(ref, 'Location'), animal.location),
         for (final v in animal.vaccinations)
           detail(Icons.vaccines_outlined, tr(ref, v.vaccine),
               day(v.administeredAt)),
         const SizedBox(height: 24),
         FilledButton.icon(
             onPressed: () => Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (_) => const EnrolScreen())),
+                MaterialPageRoute(builder: (_) => const RegistrationScreen())),
             icon: const Icon(Icons.add),
-            label: Text(tr(ref, 'Enrol another'))),
+            label: Text(tr(ref, 'Register another'))),
         const SizedBox(height: 12),
         OutlinedButton(
             onPressed: () {

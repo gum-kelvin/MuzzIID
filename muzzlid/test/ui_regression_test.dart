@@ -23,7 +23,7 @@ void main() {
     expect(find.byType(ListTile).evaluate().length, lessThan(20));
     expect(tester.takeException(), isNull);
   });
-  testWidgets('failed GPS refresh remains visible beside old coordinates',
+  testWidgets('location errors stay actionable without exposing coordinates',
       (tester) async {
     const message = 'Turn on GPS in Android settings.';
     await tester.pumpWidget(host(GpsSummary(
@@ -31,7 +31,8 @@ void main() {
         error: message,
         onRetry: () {})));
     expect(find.text(message), findsOneWidget);
-    expect(find.textContaining('30.00000'), findsOneWidget);
+    expect(find.textContaining('30.00000'), findsNothing);
+    expect(find.text('GPS location'), findsNothing);
   });
   testWidgets('malformed thumbnail cannot break a screen', (tester) async {
     await tester.pumpWidget(host(animalPhoto(Animal(

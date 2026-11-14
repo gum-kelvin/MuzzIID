@@ -14,7 +14,7 @@ import 'package:muzzlid/domain/field_records.dart';
 import 'package:muzzlid/main.dart';
 import 'package:muzzlid/presentation/state.dart';
 import 'package:muzzlid/presentation/field_state.dart';
-import 'package:muzzlid/presentation/enrol_screen.dart';
+import 'package:muzzlid/presentation/registration_screen.dart';
 import 'package:muzzlid/presentation/profile_screen.dart';
 import 'package:muzzlid/presentation/vaccination_screen.dart';
 
@@ -70,8 +70,11 @@ void main() {
       repositoryProvider.overrideWithValue(repository),
       locationServiceProvider.overrideWithValue(TestLocation()),
       // This test exercises the workflow; camera-frame analysis is tested separately.
-      captureFramesProvider.overrideWithValue((context) async => List.filled(
-          5, base64Encode(img.encodeJpg(img.Image(width: 8, height: 8))))),
+      captureFramesProvider.overrideWithValue((context) async => List.generate(
+          5,
+          (index) => base64Encode(img.encodeJpg(img.fill(
+              img.Image(width: 8, height: 8),
+              color: img.ColorRgb8(index * 45, 120, 80)))))),
     ], child: const MuzzlidApp()));
     await tester.pumpAndSettle();
     final screenshots = Directory('${directory.path}/ui-test-screenshots');
@@ -89,7 +92,7 @@ void main() {
     expect(find.text('District manifest'), findsNothing);
     await tester.tap(find.byIcon(Icons.list_alt));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Enrol animal'));
+    await tester.tap(find.text('Register animal'));
     await tester.pumpAndSettle();
     Finder scrollOf(Type type) => find
         .descendant(of: find.byType(type), matching: find.byType(Scrollable))
@@ -108,14 +111,14 @@ void main() {
         find.byKey(const ValueKey('Place label')), 'Mbarara market');
     FocusManager.instance.primaryFocus?.unfocus();
     await tester.pumpAndSettle();
-    await tapVisible('Next: capture muzzle', EnrolScreen);
+    await tapVisible('Next: capture muzzle', RegistrationScreen);
     expect(find.text('Vaccination & review'), findsOneWidget);
-    await shot('enrol-review');
+    await shot('registration-review');
     await tester.tap(find.byType(SwitchListTile));
     await tester.pumpAndSettle();
     await tester.tap(find.text('FMD'));
     await tester.pumpAndSettle();
-    await tapVisible('Save enrolment', EnrolScreen);
+    await tapVisible('Save registration', RegistrationScreen);
     expect(find.text('Receipt'), findsOneWidget);
     await shot('receipt');
     final saved = (await repository.read()).single;
@@ -144,7 +147,7 @@ void main() {
         find.byKey(const ValueKey('Owner name')), 'Updated Owner');
     FocusManager.instance.primaryFocus?.unfocus();
     await tester.pumpAndSettle();
-    await tapVisible('Save changes', EnrolScreen);
+    await tapVisible('Save changes', RegistrationScreen);
     expect((await repository.read()).single.owner, 'Updated Owner');
     expect((await repository.read()).single.created, saved.created);
     await tapVisible('Add vaccination', AnimalProfileScreen);

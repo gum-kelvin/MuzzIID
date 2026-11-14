@@ -5,6 +5,19 @@ import 'state.dart';
 String tr(WidgetRef ref, String english) =>
     ref.watch(languageProvider) == 'lg' ? luganda[english] ?? english : english;
 const luganda = {
+  'Photos': 'Ebifaananyi',
+  'Capture photo': 'Kuba ekifaananyi',
+  'Take five photos of the same muzzle.':
+      'Kuba ebifaananyi bitaano eby’ennyindo y’ente emu.',
+  'Keep the same animal. Change the angle slightly.':
+      'Sigala ku nte y’emu. Kyusaamu akatono engeri gy’okwatamu essimu.',
+  'Retake last photo': 'Ddamu ekifaananyi ekisembayo',
+  'Retake photos': 'Ddamu okukuba ebifaananyi',
+  'Change the angle slightly before the next photo.':
+      'Kyusaamu akatono essimu nga tonnakuba kifaananyi kirala.',
+  'Move the muzzle inside the guide': 'Teeka ennyindo mu kifo ekiragiddwa',
+  'Location unavailable. Allow location access and turn on GPS, then retry.':
+      'Ekifo tekifuniddwa. Kiriza essimu okukozesa ekifo era oggule GPS, ogezeeko nate.',
   'Research model ready. Results need field validation.':
       'Enkola y’okunoonyereza yeetegefu. Ebyavaamu byetaaga okukakasibwa mu nnimiro.',
   'Research model result. Confirm animal identity manually.':
@@ -41,8 +54,7 @@ const luganda = {
   'Field': 'Awaka',
   'Language': 'Olulimi',
   'Verify animal': 'Kakasa ente',
-  'Enrol animal': 'Wandiika ente',
-  'Enrol New Animal': 'Wandiika ente empya',
+  'Register animal': 'Wandiika ente',
   'Edit animal': 'Kyusa ebikwata ku nte',
   'Owner name': 'Erinnya lya nnannyini nte',
   'Farmer NIN': 'Namba y’endagamuntu',
@@ -66,11 +78,11 @@ const luganda = {
   'Required': 'Kyetaagisa',
   'Search ID, owner or breed': 'Noonya namba, nnannyini oba ekika',
   'No animals registered yet.': 'Tewali nte nnawandiike.',
-  '5-frame burst complete': 'Ebifaananyi bitaano biwedde',
+  '5 photos captured': 'Ebifaananyi bitaano biwedde',
   'Export JSON': 'Fulumya JSON',
   'Export CSV': 'Fulumya CSV',
   'Import CSV / JSON': 'Yingiza CSV / JSON',
-  'Capture five frames before saving.':
+  'Take five different photos before saving.':
       'Sooka okube ebifaananyi bitaano nga tonnatereka.',
   'Confirm the whole muzzle fills the guide.':
       'Kakasa nti ennyindo yonna eri mu kifo ekiragiddwa.',
@@ -87,7 +99,8 @@ const luganda = {
   "Who owns this animal?": "Ente eno ya ani?",
   "Place label (optional)": "Erinnya ly’ekifo (bw’oba olina)",
   "Next: capture muzzle": "Ekiddako: kuba ennyindo",
-  "Capture five clear frames": "Kuba ebifaananyi bitaano ebirabika obulungi",
+  "Take five photos of the same muzzle":
+      "Kuba ebifaananyi bitaano ebirabika obulungi",
   "Wipe the muzzle dry and keep it inside the guide.":
       "Siimuula ennyindo ekale era egume mu kiragiro.",
   "Back": "Ddayo",
@@ -95,13 +108,13 @@ const luganda = {
   "Vaccine given today?": "Ente egemeddwa leero?",
   "Choose a vaccine": "Londa eddagala ly’okugema",
   "Review": "Kebera",
-  "Save enrolment": "Tereka ente",
+  "Save registration": "Tereka ente",
   "Edit details": "Kyusa ebikwata ku nte",
   "Save changes": "Tereka enkyukakyuka",
   "Receipt": "Lisiti",
   "Receipt ID": "Namba ya lisiti",
   "Recorded": "Ebyawandiikiddwa",
-  "Enrol another": "Wandiika endala",
+  "Register another": "Wandiika endala",
   "Back to Field": "Ddayo awaka",
   "Your record is stored on this device. Upload will require a connected sync service.":
       "Ebiwandiiko biterekeddwa ku ssimu eno. Okuweereza kwetaaga okuyunga enkola y’okutereka.",
@@ -185,13 +198,13 @@ const luganda = {
       "Omutwe gusigale nga munywevu era gujjuze ekiragiro.",
   "Animal ID": "Namba y’ente",
   "Full profile": "Ebikwata ku nte byonna",
-  "Enrol this animal": "Wandiika ente eno",
+  "Register this animal": "Wandiika ente eno",
   "Scan again": "Kuba nate",
   "Done": "Kiwedde",
   "Saving scan": "Tutereka ekifaananyi",
   "Recent activity": "Ebyakakolebwa",
   "No recent activity": "Tewali kyakakolebwa",
-  "Enrolment": "Okuwandiisa",
+  "Registration": "Okuwandiisa",
   "Verification": "Okukakasa",
   "Search ID, owner or location": "Noonya namba, nnannyini oba ekifo",
   "All": "Zonna",
@@ -206,7 +219,7 @@ const luganda = {
   'Importing manifest': 'Tuyingiza olukalala',
   'Camera processing stopped. Try again.':
       'Okukola kwa kamera kuyimiridde. Gezaako nate.',
-  'Enrol as new animal': 'Wandiika ng’ente empya',
+  'Register as new animal': 'Wandiika ng’ente empya',
   'Hold steady · capturing': 'Kwata essimu enywevu · tukuba ekifaananyi',
   'Preparing capture': 'Tutegereza ekifaananyi',
 };

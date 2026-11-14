@@ -22,6 +22,7 @@ class _VaccinationState extends ConsumerState<VaccinationScreen> {
   GeoFix? gps;
   bool locating = false, saving = false;
   String? gpsError;
+  Future<GeoFix?>? locationRequest;
   final batch = TextEditingController();
   @override
   void initState() {
@@ -35,9 +36,9 @@ class _VaccinationState extends ConsumerState<VaccinationScreen> {
     super.dispose();
   }
 
-  Future<void> locate() async {
-    if (locating) return;
-    setState(() => locating = true);
+  Future<GeoFix?> locate() => locationRequest ??= fetchLocation();
+  Future<GeoFix?> fetchLocation() async {
+    if (mounted) setState(() => locating = true);
     try {
       final fix = await ref.read(locationServiceProvider).locate();
       if (mounted) {
@@ -46,23 +47,22 @@ class _VaccinationState extends ConsumerState<VaccinationScreen> {
           gpsError = null;
         });
       }
+      return fix;
     } catch (e) {
       if (mounted) {
         setState(() => gpsError = e is StateError
             ? e.message.toString()
             : 'Unable to get GPS. Try again.');
       }
+      return null;
     } finally {
+      locationRequest = null;
       if (mounted) setState(() => locating = false);
     }
   }
 
   Future<void> save() async {
-    if (selected.isEmpty || gps == null) return;
-    if (!gps!.fresh(DateTime.now())) {
-      await locate();
-      return;
-    }
+    if (saving || selected.isEmpty) return;
     if (until != null && until!.isBefore(date)) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(tr(ref, 'Validity must be after administration'))));
@@ -70,6 +70,11 @@ class _VaccinationState extends ConsumerState<VaccinationScreen> {
     }
     setState(() => saving = true);
     try {
+      if (gps == null || !gps!.fresh(DateTime.now())) {
+        final fix = await locate();
+        if (fix == null) return;
+      }
+      if (!mounted) return;
       final item = Vaccination(
           id: 'VAC-${DateTime.now().microsecondsSinceEpoch}',
           vaccine: selected.single,
@@ -140,9 +145,7 @@ class _VaccinationState extends ConsumerState<VaccinationScreen> {
             fix: gps, loading: locating, error: gpsError, onRetry: locate),
         const SizedBox(height: 24),
         FilledButton(
-            onPressed: saving || locating || selected.isEmpty || gps == null
-                ? null
-                : save,
+            onPressed: saving || selected.isEmpty ? null : save,
             child: Text(tr(ref, 'Save vaccination'))),
         if (saving) const LinearProgressIndicator(),
       ]));

@@ -22,8 +22,6 @@ void problem(BuildContext context) {
 
 String day(DateTime time) =>
     '${time.day.toString().padLeft(2, '0')}/${time.month.toString().padLeft(2, '0')}/${time.year}';
-String stamp(DateTime time) =>
-    '${day(time.toLocal())} · ${time.toLocal().hour.toString().padLeft(2, '0')}:${time.toLocal().minute.toString().padLeft(2, '0')}';
 Widget animalPhoto(Animal a, {double size = 48}) =>
     _AnimalPhoto(animal: a, size: size);
 
@@ -121,30 +119,13 @@ class GpsSummary extends ConsumerWidget {
       required this.onRetry,
       this.error});
   @override
-  Widget build(BuildContext context, WidgetRef ref) => Card(
-      child: Padding(
-          padding: const EdgeInsets.all(16),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Row(children: [
-              const Icon(Icons.location_on_outlined),
-              const SizedBox(width: 12),
-              Expanded(child: Text(tr(ref, 'GPS location'))),
-              if (loading)
-                const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2))
-              else
-                IconButton(
-                    tooltip: tr(ref, 'Refresh GPS'),
-                    onPressed: onRetry,
-                    icon: const Icon(Icons.refresh))
-            ]),
-            if (fix != null) Text(fix!.label),
-            if (error != null)
-              Text(tr(ref, error!),
-                  style: TextStyle(color: Theme.of(context).colorScheme.error)),
-            if (fix == null && error == null) Text(tr(ref, 'Waiting for GPS')),
-          ])));
+  Widget build(BuildContext context, WidgetRef ref) => error == null
+      ? const SizedBox.shrink()
+      : Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(tr(ref, error!),
+              style: TextStyle(color: Theme.of(context).colorScheme.error)),
+          TextButton(
+              onPressed: loading ? null : onRetry,
+              child: Text(tr(ref, 'Try again'))),
+        ]);
 }

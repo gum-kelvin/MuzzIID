@@ -1,3 +1,5 @@
+> Historical ResNet experiment. The active Android model is now [MegaDescriptor-L-384](megadescriptor/README.md). Results below describe the previous model and must not be attributed to MegaDescriptor.
+
 # Cattle muzzle research baseline
 
 Training pipeline for the Android client. This adapts the ResNet family approach in [Animal_Biometrics_System](https://github.com/darasiemi/Animal_Biometrics_System) into a versioned 512-dimensional embedding model compatible with MuzzlID's ONNX runtime. It is not a reproduction of that project's classifier results.

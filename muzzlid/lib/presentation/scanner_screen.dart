@@ -1,28 +1,23 @@
-import '../data/local_model.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../data/local_model.dart';
 import '../data/camera_frame.dart';
 import '../domain/capture_policy.dart';
-import 'strings.dart';
-import 'field_state.dart';
+import '../domain/registration_photos.dart';
 import '../domain/field_records.dart';
 import '../domain/verification.dart';
+import 'field_state.dart';
 import 'result_screen.dart';
 import 'capture_delivery.dart';
+import 'camera_geometry.dart';
+import 'scanner_view.dart';
 
 class ScannerScreen extends ConsumerStatefulWidget {
-  final bool enrol, initialClean;
-  final GeoFix? scanGps;
-  final ValueChanged<Duration>? onBurstTiming;
-  const ScannerScreen(
-      {super.key,
-      this.enrol = true,
-      this.scanGps,
-      this.initialClean = false,
-      this.onBurstTiming});
+  final bool registration;
+  const ScannerScreen({super.key, this.registration = true});
   @override
   ConsumerState<ScannerScreen> createState() => _ScannerState();
 }
@@ -30,62 +25,73 @@ class ScannerScreen extends ConsumerStatefulWidget {
 class _ScannerState extends ConsumerState<ScannerScreen>
     with WidgetsBindingObserver {
   CameraController? camera;
-  bool clean = false,
-      framed = false,
-      processing = false,
-      armed = false,
-      finished = false;
-  String? error;
-  int generation = 0;
-  int? lastAnalysedTimestamp;
-  final burst = EnrolmentBurst();
-  final clock = Stopwatch()..start();
-  final frames = <Map<String, dynamic>>[];
-  int? armedAt;
+  bool processing = false, armed = false, encoding = false, finished = false;
+  bool resolving = false, quality = false, detectorEnabled = false;
+  String? error, pendingPhoto;
   String instruction = 'Hold steady';
-  bool quality = false;
-  bool detectorEnabled = false;
-  Rect? detectedBox;
-  Future<void> loadDetector() async {
-    try {
-      final status = await AndroidEmbeddingEngine.channel
-          .invokeMapMethod("detectorStatus");
-      final settings = await ref.read(settingsProvider.future);
-      if (mounted && status?["ready"] == true && settings['guided'] != true) {
-        setState(() => detectorEnabled = true);
-      }
-    } catch (_) {
-      /* Guided capture remains available when the detector cannot load. */
-    }
-  }
-
+  int generation = 0, armedAt = 0, noticeUntil = 0;
+  final clock = Stopwatch()..start();
+  final photos = RegistrationPhotos();
   final delivery = CaptureDelivery();
-  void whenResumed(VoidCallback action) {
-    delivery.deliver(() {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) action();
-      });
-      WidgetsBinding.instance.ensureVisualUpdate();
-    });
-  }
+  CameraGeometry? geometry;
+  Rect? detectedBox;
+  GeoFix? gps;
+  Future<GeoFix?>? gpsRequest;
+  DateTime? capturedAt;
+  String? scanId;
+  bool scanSaved = false;
 
   @override
   void initState() {
     super.initState();
-    clean = widget.initialClean;
     WidgetsBinding.instance.addObserver(this);
     open();
     loadDetector();
   }
 
+  Future<GeoFix?> locate() => gpsRequest ??= fetchLocation();
+  Future<GeoFix?> fetchLocation() async {
+    try {
+      return gps = await ref.read(locationServiceProvider).locate();
+    } catch (_) {
+      return null;
+    } finally {
+      gpsRequest = null;
+    }
+  }
+
+  Future<void> loadDetector() async {
+    try {
+      final status = await AndroidEmbeddingEngine.channel
+          .invokeMapMethod('detectorStatus');
+      final settings = await ref.read(settingsProvider.future);
+      if (mounted && status?['ready'] == true && settings['guided'] != true) {
+        setState(() => detectorEnabled = true);
+      }
+    } catch (_) {/* The manual guide remains available. */}
+  }
+
+  void whenResumed(VoidCallback action) => delivery.deliver(() {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) action();
+        });
+        WidgetsBinding.instance.ensureVisualUpdate();
+      });
+
   Future<void> open() async {
     final token = ++generation;
+    if (mounted) {
+      setState(() {
+        error = null;
+        quality = false;
+        instruction = 'Hold steady';
+      });
+    }
     try {
       final previous = camera;
       camera = null;
       await previous?.dispose();
-      final cameras = await availableCameras();
-      final back = cameras
+      final back = (await availableCameras())
           .firstWhere((c) => c.lensDirection == CameraLensDirection.back);
       final next = CameraController(back, ResolutionPreset.medium,
           enableAudio: false, imageFormatGroup: ImageFormatGroup.yuv420);
@@ -97,7 +103,11 @@ class _ScannerState extends ConsumerState<ScannerScreen>
       }
       camera = next;
       await next.startImageStream((image) => analyse(image, token));
-      if (mounted) setState(() => error = null);
+      if (!widget.registration &&
+          (gps == null || !gps!.fresh(DateTime.now()))) {
+        locate();
+      }
+      if (mounted) setState(() {});
     } catch (_) {
       if (mounted && token == generation) {
         setState(() => error =
@@ -106,23 +116,19 @@ class _ScannerState extends ConsumerState<ScannerScreen>
     }
   }
 
-  void reset() {
-    armed = false;
-    burst.reset();
-    frames.clear();
-    lastAnalysedTimestamp = null;
-    armedAt = null;
-  }
-
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.inactive ||
         state == AppLifecycleState.paused) {
       delivery.setActive(false);
       generation++;
-      camera?.dispose();
+      final previous = camera;
       camera = null;
-      if (!finished) reset();
+      previous?.dispose();
+      armed = false;
+      quality = false;
+      instruction = 'Hold steady';
+      // Already accepted photos survive pauses; unfinished frame work is discarded.
     } else if (state == AppLifecycleState.resumed) {
       delivery.setActive(true);
       if (camera == null && !finished) open();
@@ -130,14 +136,26 @@ class _ScannerState extends ConsumerState<ScannerScreen>
   }
 
   Future<void> analyse(CameraImage image, int token) async {
-    if (processing || finished || token != generation) return;
+    if (processing ||
+        encoding ||
+        finished ||
+        token != generation ||
+        geometry == null) {
+      return;
+    }
     processing = true;
-    bool completing = false;
     final acquiredAt = clock.elapsedMilliseconds;
     try {
+      final roi = geometry!.roi;
       final input = <String, dynamic>{
         'encodeJpeg': false,
         'encodeRgb': detectorEnabled,
+        'roi': {
+          'x': roi.left,
+          'y': roi.top,
+          'width': roi.width,
+          'height': roi.height
+        },
         'width': image.width,
         'height': image.height,
         'rotation': camera!.description.sensorOrientation,
@@ -147,13 +165,12 @@ class _ScannerState extends ConsumerState<ScannerScreen>
                   'row': p.bytesPerRow,
                   'pixel': p.bytesPerPixel ?? 1
                 })
-            .toList()
+            .toList(),
       };
       final result = await compute(processCameraFrame, input);
       if (!mounted || token != generation) return;
-      final light = result['luminance'] as double,
-          focus = result['sharpness'] as double;
-      bool localized = framed;
+      bool localized =
+          true; // Guided framing is passive, not an acknowledgement gate.
       if (detectorEnabled) {
         final detection = await AndroidEmbeddingEngine.channel.invokeMapMethod(
             'detectRgb', {
@@ -179,124 +196,143 @@ class _ScannerState extends ConsumerState<ScannerScreen>
             box.bottom <= 1 &&
             box.width * box.height >= .4;
       }
-      final good = clean && localized && qualityIssue(focus, light) == null;
-      final nextInstruction = !clean
-          ? 'Wipe muzzle dry'
+      final issue = qualityIssue(
+          result['sharpness'] as double, result['luminance'] as double);
+      final good = localized && issue == null;
+      final text = clock.elapsedMilliseconds < noticeUntil
+          ? 'Change the angle slightly before the next photo.'
           : !localized
-              ? 'Confirm the whole muzzle fills the guide.'
-              : focus <= 120
+              ? 'Move the muzzle inside the guide'
+              : issue == CaptureIssue.blur
                   ? 'Hold steady'
-                  : light < 45
+                  : issue == CaptureIssue.dark
                       ? 'More light needed'
-                      : light > 215
+                      : issue == CaptureIssue.glare
                           ? 'Reduce glare'
-                          : armed
-                              ? 'Hold steady · capturing'
-                              : 'Ready to capture';
-      if (detectorEnabled ||
-          quality != good ||
-          instruction != nextInstruction) {
+                          : 'Ready to capture';
+      if (detectorEnabled || quality != good || instruction != text) {
         setState(() {
           quality = good;
-          instruction = nextInstruction;
+          instruction = text;
         });
       }
-      if (!armed || armedAt == null || acquiredAt < armedAt!) return;
-      final timestamp = acquiredAt;
-      if (lastAnalysedTimestamp != null &&
-          timestamp - lastAnalysedTimestamp! > 500) {
-        burst.reset();
-        frames.clear();
-      }
-      lastAnalysedTimestamp = timestamp;
-      final before = burst.count;
-      burst.accept(timestampMs: timestamp, valid: good);
-      if (burst.count == 0 || burst.count < before) frames.clear();
-      if (burst.count > frames.length) {
-        frames.add(input);
-      }
-      if (before != burst.count) setState(() {});
-      if ((widget.enrol && burst.complete) || (!widget.enrol && good)) {
-        final selectedFrames = List<Map<String, dynamic>>.unmodifiable(frames);
-        if (widget.enrol) {
-          widget.onBurstTiming?.call(Duration(milliseconds: burst.durationMs));
+      if (!armed || acquiredAt < armedAt || !good) return;
+      armed = false;
+      encoding = true;
+      setState(() => instruction = 'Preparing capture');
+      final photo = (await compute(encodeCameraBurst, [input])).single;
+      if (!mounted || token != generation) return;
+      if (widget.registration) {
+        if (!photos.add(photo, acquiredAt)) {
+          noticeUntil = clock.elapsedMilliseconds + 2500;
+          setState(() =>
+              instruction = 'Change the angle slightly before the next photo.');
+          return;
         }
-        completing = true;
+        setState(() {
+          quality = false;
+        });
+        if (!photos.complete) return;
         finished = true;
-        armed = false;
-        setState(() => instruction = 'Preparing capture');
-        // Camera release may race an OS pause after the payload is complete.
-        try {
-          await camera?.stopImageStream();
-        } catch (_) {/* Payload is already owned. */}
-        final completedFrames =
-            snapshotCapture(await compute(encodeCameraBurst, selectedFrames));
-        if (!mounted) return;
-        if (widget.enrol) {
-          whenResumed(() => Navigator.pop(context, completedFrames));
-        } else {
-          setState(() => instruction = 'Saving scan');
-          final gps =
-              widget.scanGps != null && widget.scanGps!.fresh(DateTime.now())
-                  ? widget.scanGps!
-                  : await ref.read(locationServiceProvider).locate();
-          final time = DateTime.now().toUtc();
-          final id = 'SCAN-${time.microsecondsSinceEpoch}';
-          await ref.read(activityProvider.notifier).add(FieldActivity(
-              id: id,
-              kind: 'Verification',
-              animalId: '',
-              time: time,
-              gps: gps,
-              frames: [completedFrames.first]));
-          if (mounted) setState(() => instruction = 'Comparing local records');
-          VerificationResult result;
-          try {
-            result = await ref
-                .read(verificationServiceProvider)
-                .verify(completedFrames.first, gps)
-                .timeout(const Duration(minutes: 5));
-          } catch (_) {
-            result = const VerificationResult(VerificationStatus.pending);
-          }
-          final score = result.confidence;
-          if (result.status != VerificationStatus.pending &&
-              (score == null ||
-                  !score.isFinite ||
-                  score < -1 ||
-                  score > 1 ||
-                  (result.status == VerificationStatus.verified &&
-                      result.animal == null))) {
-            result = const VerificationResult(VerificationStatus.pending);
-          }
-          if (result.status != VerificationStatus.pending) {
-            await ref
-                .read(activityProvider.notifier)
-                .settle(id, result.status.name);
-          }
-          if (!mounted) return;
-          whenResumed(() => Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (_) => ResultScreen(
-                      result: result,
-                      frame: completedFrames.first,
-                      gps: gps,
-                      time: time))));
-        }
+        await stopStream();
+        final completed = snapshotCapture(photos.photos);
+        whenResumed(() => Navigator.pop(context, completed));
+      } else {
+        pendingPhoto = photo;
+        capturedAt = DateTime.now().toUtc();
+        scanId = 'SCAN-${capturedAt!.microsecondsSinceEpoch}';
+        finished = true;
+        await stopStream();
+        await resolveVerification();
       }
     } catch (_) {
-      if (mounted && (token == generation || completing)) {
+      if (mounted && token == generation) {
         setState(() {
-          finished = false;
-          quality = false;
-          instruction = 'Try again';
           error = 'Camera processing stopped. Try again.';
-          reset();
+          armed = false;
+          quality = false;
         });
       }
     } finally {
+      final encoded = encoding;
       processing = false;
+      encoding = false;
+      if (mounted && encoded) setState(() {});
+    }
+  }
+
+  Future<void> stopStream() async {
+    try {
+      await camera?.stopImageStream();
+    } catch (_) {/* The completed photo payload is owned independently. */}
+  }
+
+  Future<void> resolveVerification() async {
+    if (resolving || pendingPhoto == null) return;
+    setState(() {
+      resolving = true;
+      error = null;
+      instruction = 'Saving scan';
+    });
+    try {
+      final fix =
+          gps != null && gps!.fresh(DateTime.now()) ? gps : await locate();
+      if (fix == null) {
+        if (mounted) {
+          setState(() => error =
+              'Location unavailable. Allow location access and turn on GPS, then retry.');
+        }
+        return;
+      }
+      if (!mounted) return;
+      if (!scanSaved) {
+        await ref.read(activityProvider.notifier).add(FieldActivity(
+            id: scanId!,
+            kind: 'Verification',
+            animalId: '',
+            time: capturedAt!,
+            gps: fix,
+            frames: [pendingPhoto!]));
+        scanSaved = true;
+      }
+      if (mounted) setState(() => instruction = 'Comparing local records');
+      VerificationResult result;
+      try {
+        result = await ref
+            .read(verificationServiceProvider)
+            .verify(pendingPhoto!, fix)
+            .timeout(const Duration(minutes: 5));
+      } catch (_) {
+        result = const VerificationResult(VerificationStatus.pending);
+      }
+      final score = result.confidence;
+      if (result.status != VerificationStatus.pending &&
+          (score == null ||
+              !score.isFinite ||
+              score < -1 ||
+              score > 1 ||
+              (result.status == VerificationStatus.verified &&
+                  result.animal == null))) {
+        result = const VerificationResult(VerificationStatus.pending);
+      }
+      if (result.status != VerificationStatus.pending) {
+        await ref
+            .read(activityProvider.notifier)
+            .settle(scanId!, result.status.name);
+      }
+      if (!mounted) return;
+      whenResumed(() => Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (_) => ResultScreen(
+                  result: result,
+                  frame: pendingPhoto!,
+                  gps: fix,
+                  time: capturedAt!))));
+    } catch (_) {
+      if (mounted) setState(() => error = 'Unable to save. Please try again.');
+    } finally {
+      if (mounted) setState(() => resolving = false);
     }
   }
 
@@ -310,150 +346,44 @@ class _ScannerState extends ConsumerState<ScannerScreen>
   }
 
   @override
-  Widget build(BuildContext context) {
-    final c = camera;
-    return Scaffold(
-        backgroundColor: const Color(0xff132b20),
-        appBar: AppBar(
-            backgroundColor: const Color(0xff132b20),
-            foregroundColor: Colors.white,
-            title: Text(
-                tr(ref, widget.enrol ? 'Capture muzzle' : 'Verify animal'))),
-        body: SafeArea(
-            child: Column(children: [
-          if (error != null)
-            Expanded(
-                child: Center(
-                    child: Padding(
-                        padding: const EdgeInsets.all(24),
-                        child:
-                            Column(mainAxisSize: MainAxisSize.min, children: [
-                          Text(tr(ref, error!),
-                              style: const TextStyle(color: Colors.white)),
-                          TextButton(
-                              onPressed: open,
-                              child: Text(tr(ref, 'Try again')))
-                        ]))))
-          else
-            Expanded(
-                child: c == null || !c.value.isInitialized
-                    ? const Center(child: CircularProgressIndicator())
-                    : Center(
-                        child: AspectRatio(
-                            aspectRatio: 1 / c.value.aspectRatio,
-                            child: Stack(fit: StackFit.expand, children: [
-                              CameraPreview(c),
-                              FractionallySizedBox(
-                                  widthFactor: .75,
-                                  heightFactor: .45,
-                                  alignment: const Alignment(0, .455),
-                                  child: Container(
-                                      decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: quality
-                                                  ? const Color(0xff64c08a)
-                                                  : Colors.amber,
-                                              width: 3),
-                                          borderRadius:
-                                              BorderRadius.circular(12)))),
-                              if (detectorEnabled && detectedBox != null)
-                                FractionallySizedBox(
-                                    widthFactor: .75,
-                                    heightFactor: .45,
-                                    alignment: const Alignment(0, .455),
-                                    child: LayoutBuilder(
-                                        builder: (context, bounds) =>
-                                            Stack(children: [
-                                              Positioned(
-                                                  left: detectedBox!.left *
-                                                      bounds.maxWidth,
-                                                  top: detectedBox!.top *
-                                                      bounds.maxHeight,
-                                                  width: detectedBox!.width *
-                                                      bounds.maxWidth,
-                                                  height: detectedBox!.height *
-                                                      bounds.maxHeight,
-                                                  child: DecoratedBox(
-                                                      decoration: BoxDecoration(
-                                                          border: Border.all(
-                                                              color: quality
-                                                                  ? Colors
-                                                                      .greenAccent
-                                                                  : Colors
-                                                                      .amber,
-                                                              width: 2))))
-                                            ]))),
-                              Positioned(
-                                  top: 16,
-                                  left: 16,
-                                  right: 16,
-                                  child: Container(
-                                      padding: const EdgeInsets.all(12),
-                                      decoration: BoxDecoration(
-                                          color: Colors.black87,
-                                          borderRadius:
-                                              BorderRadius.circular(16)),
-                                      child: Text(tr(ref, instruction),
-                                          textAlign: TextAlign.center,
-                                          style: const TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w600)))),
-                            ])))),
-          Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(children: [
-                CheckboxListTile(
-                    value: clean,
-                    onChanged: finished
-                        ? null
-                        : (v) => setState(() {
-                              clean = v!;
-                              reset();
-                            }),
-                    title: Text(tr(ref, 'Wipe muzzle dry'),
-                        style: const TextStyle(color: Colors.white))),
-                if (detectorEnabled)
-                  TextButton(
-                      onPressed: finished
-                          ? null
-                          : () => setState(() {
-                                detectorEnabled = false;
-                                detectedBox = null;
-                                reset();
-                              }),
-                      child: Text(tr(ref, 'Use guided capture')))
-                else
-                  CheckboxListTile(
-                      value: framed,
-                      onChanged: finished
-                          ? null
-                          : (v) => setState(() {
-                                framed = v!;
-                                reset();
-                              }),
-                      title: Text(
-                          tr(ref, 'Confirm the whole muzzle fills the guide.'),
-                          style: const TextStyle(color: Colors.white))),
-                Text(
-                    '${tr(ref, detectorEnabled ? 'Automatic muzzle detection' : 'Guided Reticle')} · ${burst.count} / ${widget.enrol ? 5 : 1}',
-                    style: const TextStyle(color: Colors.white70)),
-                const SizedBox(height: 12),
-                if (finished) const LinearProgressIndicator(),
-                FilledButton(
-                    onPressed: !quality || armed || finished
-                        ? null
-                        : () => setState(() {
-                              reset();
-                              armed = true;
-                              armedAt = clock.elapsedMilliseconds;
-                            }),
-                    child: Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Icon(
-                            armed ? Icons.hourglass_top : Icons.camera_alt,
-                            size: 32))),
-                const SizedBox(height: 16),
-              ])),
-        ])));
-  }
+  Widget build(BuildContext context) =>
+      Scaffold(body: LayoutBuilder(builder: (context, constraints) {
+        final layout = CameraGeometry(constraints.biggest,
+            camera == null ? 2 / 3 : 1 / camera!.value.aspectRatio);
+        geometry = layout;
+        final busy = armed || encoding || finished || resolving;
+        return ScannerView(
+            camera: camera,
+            geometry: layout,
+            registration: widget.registration,
+            ready: quality && !busy,
+            busy: busy,
+            detector: detectorEnabled,
+            photos: photos.photos,
+            instruction: instruction,
+            error: error,
+            detection: detectedBox,
+            onBack: () => Navigator.pop(context),
+            onRetry: pendingPhoto != null ? resolveVerification : open,
+            onCapture: !quality || busy || error != null
+                ? null
+                : () => setState(() {
+                      armed = true;
+                      instruction = 'Hold steady';
+                      armedAt = clock.elapsedMilliseconds;
+                    }),
+            onUndo: busy
+                ? null
+                : () => setState(() {
+                      photos.undo();
+                      noticeUntil = 0;
+                    }),
+            onGuided: busy
+                ? null
+                : () => setState(() {
+                      detectorEnabled = false;
+                      detectedBox = null;
+                      quality = false;
+                    }));
+      }));
 }

@@ -1,8 +1,8 @@
 # MuzzIID
 
-Private Flutter Android cattle register with CameraX guided muzzle capture, encrypted offline records, structured vaccinations, English/Luganda, and a bundled ResNet50/ArcFace research embedding model.
+Private Flutter Android cattle register with CameraX guided muzzle capture, encrypted offline records, structured vaccinations, English/Luganda, and a bundled MegaDescriptor-L-384 research embedding model.
 
-The interface uses Material 3 with the existing cream-and-green design. Saved offline is in Settings. Enrolment captures five quality-approved frames and issues a local receipt; verification compares against the device's local register.
+The interface uses Material 3 with the existing cream-and-green design. Saved offline is in Settings. Registration collects five separate quality-approved photos and issues a local receipt; verification opens directly into a full-screen camera and compares against the device's local register. GPS and audit timestamps are collected automatically and not displayed.
 
 ## Run
 
@@ -35,8 +35,8 @@ The original Word specification is included. Later user-approved client changes 
 
 ## Model and validation
 
-The bundled model was trained using 4,823 public muzzle images from 248 cattle, with separate training, calibration and test identities. It ranked the correct identity first on 95.06% of 627 held-out probes. This is a research baseline: field accuracy, the specification's false-match target, liveness and ownership verification are not certified. Research results require manual confirmation.
+The active model is [BVRA/MegaDescriptor-L-384](https://huggingface.co/BVRA/MegaDescriptor-L-384), converted to INT8 ONNX for private mobile inference. It uses 384×384 RGB inputs normalized with mean/std 0.5 and returns all 1,536 embedding features. Its model-card licence is CC BY-NC 4.0. Matching thresholds are from a small public-data pilot and require field calibration; research results require manual confirmation. The previous ResNet experiment is retained as historical training provenance.
 
-See [model integration](docs/MODEL_INTEGRATION.md), [training provenance](model_training/README.md), [measured results](model_training/report.json), and [Android validation](docs/ANDROID_VALIDATION.md).
+See [model integration](docs/MODEL_INTEGRATION.md), [active-model provenance](model_training/megadescriptor/README.md), [measured results](model_training/megadescriptor/validation_report.json), and [Android validation](docs/ANDROID_VALIDATION.md).
 
 The Nokia validation passed the full Android runner, including encrypted workflows, CameraX/GPS, actual ONNX inference, and isolated enrolment/matching/cache checks. Local device screenshots, records, exports, environments and build outputs are excluded from this repository.

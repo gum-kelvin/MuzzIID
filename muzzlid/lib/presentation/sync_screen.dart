@@ -72,11 +72,10 @@ class SyncScreen extends ConsumerWidget {
               if (scans.isLoading) () => const LinearProgressIndicator(),
               if (scans.hasError)
                 () => Text(tr(ref, 'Unable to read local records.')),
-              for (final item in pendingScans)
+              for (var index = 0; index < pendingScans.length; index++)
                 () => ListTile(
                     leading: const Icon(Icons.center_focus_strong),
                     title: Text(tr(ref, 'Verification pending')),
-                    subtitle: Text(stamp(item.time)),
                     trailing: badge(tr(ref, 'Pending sync'), warning: true)),
               if (animals.any((a) => a.syncState == 'acknowledged'))
                 () => section(context, tr(ref, 'Synced')),

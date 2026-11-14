@@ -4,7 +4,7 @@ import '../domain/register.dart';
 import 'state.dart';
 import 'strings.dart';
 import 'ui_parts.dart';
-import 'enrol_screen.dart';
+import 'registration_screen.dart';
 import 'vaccination_screen.dart';
 
 class AnimalProfileScreen extends ConsumerWidget {
@@ -25,7 +25,7 @@ class AnimalProfileScreen extends ConsumerWidget {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (_) => EnrolScreen(animal: a)));
+                              builder: (_) => RegistrationScreen(animal: a)));
                       return;
                     }
                     final yes = await showDialog<bool>(
@@ -85,10 +85,8 @@ class AnimalProfileScreen extends ConsumerWidget {
                   warning: a.syncState != 'acknowledged')),
           section(context, tr(ref, 'Owner')),
           detail(Icons.person_outline, tr(ref, 'Owner name'), a.owner),
-          section(context, tr(ref, 'Registered')),
-          detail(Icons.schedule, tr(ref, 'Recorded'), stamp(a.created)),
-          detail(Icons.location_on_outlined, tr(ref, 'Location'),
-              '${a.location}\n${a.gps?.label ?? tr(ref, 'GPS not recorded')}'),
+          if (a.location.isNotEmpty)
+            detail(Icons.location_on_outlined, tr(ref, 'Location'), a.location),
           section(context, tr(ref, 'Vaccinations')),
           if (a.vaccinations.isEmpty) Text(tr(ref, 'No vaccination records')),
           if (a.vaccines.isNotEmpty)

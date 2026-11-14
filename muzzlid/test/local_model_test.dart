@@ -20,12 +20,14 @@ class Engine implements EmbeddingEngine {
   bool calibrated = true;
   String version = 'v1:hash';
   int calls = 0;
+  int dimensions = 512;
   @override
   Future<Map<String, dynamic>> status() async => {
         'ready': true,
         'calibrated': calibrated,
         'research': true,
         'version': version,
+        'dimensions': dimensions,
         'matchThreshold': .8,
         'uncertainThreshold': .6,
         'minimumMargin': .05
@@ -33,7 +35,8 @@ class Engine implements EmbeddingEngine {
   @override
   Future<List<double>> embed(String jpeg, String version) async {
     calls++;
-    return List.generate(512, (i) => i == (jpeg == 'other' ? 1 : 0) ? 1 : 0);
+    return List.generate(
+        dimensions, (i) => i == (jpeg == 'other' ? 1 : 0) ? 1 : 0);
   }
 }
 
@@ -78,6 +81,24 @@ void main() {
     records = [...records, animal('2', 'same')];
     expect((await service.verify('same', gps)).status,
         VerificationStatus.uncertain);
+  });
+  test('1536-D model rebuilds old templates without truncating vectors',
+      () async {
+    final engine = Engine();
+    final cache = MemoryTemplates();
+    final service = LocalModelVerification(
+        engine, () async => [animal('1', 'same')],
+        templates: cache);
+    await service.verify('same', gps);
+    expect((cache.data.single['vector'] as List), hasLength(512));
+    engine.dimensions = 1536;
+    engine.version = 'megadescriptor:new-artifact:preprocessing';
+    final result = await service.verify('same', gps);
+    expect(result.status, VerificationStatus.verified);
+    expect((cache.data.single['vector'] as List), hasLength(1536));
+    expect(cache.data.single['version'], engine.version);
+    expect(() => unitVector(List.filled(512, 1.0), dimensions: 1536),
+        throwsFormatException);
   });
   test('invalid and zero embeddings rejected', () {
     expect(() => unitVector(List.filled(512, 0)), throwsFormatException);

@@ -1,0 +1,65 @@
+{
+  "model": {
+    "schema": 1,
+    "version": "megadescriptor-l-384-int8-r1",
+    "displayName": "MegaDescriptor-L-384",
+    "sha256": "6b5dbc85e7283045ddafcc162003d206b384a6012b68af1531fe88fdbdcab3bc",
+    "inputSize": 384,
+    "dimensions": 1536,
+    "mean": [
+      0.5,
+      0.5,
+      0.5
+    ],
+    "std": [
+      0.5,
+      0.5,
+      0.5
+    ],
+    "calibrated": true,
+    "research": true,
+    "matchThreshold": 0.528091926574707,
+    "uncertainThreshold": 0.42809192657470707,
+    "minimumMargin": 0.02,
+    "source": "BVRA/MegaDescriptor-L-384",
+    "revision": "33b3c6f4ee0c386a4126cc3dcd23843920613fa1",
+    "license": "CC-BY-NC-4.0"
+  },
+  "preprocessing": [
+    0.5,
+    0.5,
+    0.5
+  ],
+  "fp32_export_max_absolute_error": 1.2278556823730469e-05,
+  "int8_fp32_sample_cosines": [
+    0.9976256489753723,
+    0.9971317052841187,
+    0.9904665946960449,
+    0.9932131171226501
+  ],
+  "calibration": {
+    "identities": 10,
+    "probe_images": 20,
+    "rank1_accuracy": 1.0,
+    "correct_accept_rate": 1.0,
+    "wrong_accept_rate": 0.0,
+    "impostor_search_exceedance": 0.0
+  },
+  "test": {
+    "identities": 10,
+    "probe_images": 20,
+    "rank1_accuracy": 1.0,
+    "correct_accept_rate": 1.0,
+    "wrong_accept_rate": 0.0,
+    "impostor_search_exceedance": 0.15
+  },
+  "host_int8_median_seconds": 1.1667381525039673,
+  "runtime_bytes": 254701330,
+  "seconds": 192,
+  "limitations": [
+    "Small public-data pilot only; no field FMR certificate",
+    "MegaDescriptor may have seen this dataset during pretraining; results are not independent generalization estimates",
+    "Quantized runtime differs numerically from the full-precision checkpoint",
+    "No muzzle detector/liveness model is supplied"
+  ]
+}

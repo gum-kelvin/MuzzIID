@@ -5,10 +5,10 @@ import '../domain/verification.dart';
 import '../domain/field_records.dart';
 import 'strings.dart';
 import 'ui_parts.dart';
-import 'pre_scan_screen.dart';
+import 'scanner_screen.dart';
 import 'profile_screen.dart';
 import 'vaccination_screen.dart';
-import 'enrol_screen.dart';
+import 'registration_screen.dart';
 
 class ResultScreen extends ConsumerWidget {
   final VerificationResult result;
@@ -87,8 +87,6 @@ class ResultScreen extends ConsumerWidget {
               detail(Icons.vaccines_outlined, tr(ref, v.vaccine),
                   day(v.administeredAt))
           ],
-          detail(Icons.schedule, tr(ref, 'Recorded'), stamp(time)),
-          detail(Icons.location_on_outlined, tr(ref, 'Location'), gps.label),
           const SizedBox(height: 24),
           if (status == VerificationStatus.verified && animal != null) ...[
             FilledButton.icon(
@@ -108,20 +106,27 @@ class ResultScreen extends ConsumerWidget {
           ],
           if (status == VerificationStatus.unregistered)
             FilledButton.icon(
-                onPressed: () => Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (_) => const EnrolScreen())),
+                onPressed: () => Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const RegistrationScreen())),
                 icon: const Icon(Icons.add),
-                label: Text(tr(ref, 'Enrol this animal'))),
+                label: Text(tr(ref, 'Register this animal'))),
           if (status != VerificationStatus.verified)
             OutlinedButton(
-                onPressed: () => Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (_) => const PreScanScreen())),
+                onPressed: () => Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) =>
+                            const ScannerScreen(registration: false))),
                 child: Text(tr(ref, 'Scan again'))),
           if (status == VerificationStatus.uncertain)
             OutlinedButton(
-                onPressed: () => Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (_) => const EnrolScreen())),
-                child: Text(tr(ref, 'Enrol as new animal'))),
+                onPressed: () => Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const RegistrationScreen())),
+                child: Text(tr(ref, 'Register as new animal'))),
           const SizedBox(height: 8),
           TextButton(
               onPressed: () => Navigator.popUntil(context, (r) => r.isFirst),

@@ -43,7 +43,7 @@ Future<void> main() async {
     gate(muzzle: const CaptureRect(0, 0, 10, 10)) == CaptureIssue.distance,
     'Scale gate',
   );
-  final burst = EnrolmentBurst();
+  final burst = RegistrationBurst();
   for (final stamp in [0, 375, 750, 1125, 1500]) {
     burst.accept(timestampMs: stamp, valid: true);
   }

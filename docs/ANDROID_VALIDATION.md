@@ -1,3 +1,5 @@
+> Current UI update: verification goes directly to a full-screen camera, with no pre-scan screen or acknowledgement checkboxes. Registration now collects five distinct photos from five separate shutter presses, replacing the automatic timed burst. GPS is collected asynchronously and coordinates/audit times are never rendered. Clinical vaccination dates remain visible. These explicit user changes supersede earlier burst/checklist descriptions below. Current tests and Nokia results are recorded at the end of this document.
+
 # Android validation and specification conformance
 
 Current private Flutter client, with the user's latest UI removals and a bundled trained research embedding model. Original source: `System Design & Implementation Specification Requ....docx`; explicit user changes override its stack, account, field, privacy and feature decisions.
@@ -37,7 +39,7 @@ See [full training report](../model_training/report.json), [split manifest](../m
 | --- | --- | --- |
 | CameraX / YUV capture | Flutter CameraX plugin, measured luminance/focus, portrait ROI, quality-85 JPEG after raw burst collection | Nokia negotiates 720×480, not the exact requested 640×480 |
 | YOLO localization / ≥40% occupancy | Optional single-class ONNX detector adapter and box/containment checks; guided fallback | No detector weights bundled; guided acknowledgement does not prove anatomical localization |
-| Five-frame enrolment | Five quality-approved raw frames, gap/reset policy, encoding after collection, pause/resume-safe completion | Previous Nokia runs collected five in 1,834 and 1,740 ms; latest attached-model run is checked separately |
+| Five-photo registration | One fresh quality-approved image per shutter press, exact duplicate rejection, retake action and preserved accepted photos across pause/resume | Nokia test passed five separate presses and five distinct JPEGs; animal identity/angle choice still require the operator |
 | 512-D embedding / version isolation | Bundled trained model, validated shapes/hash, normalized burst centroid, encrypted template cache keyed by artifact/source digest | Research model; no validated field FMR or recognition latency claim |
 | Open-set matching | Calibrated local cosine scores, top-two ambiguity margin; local unknown explicitly scoped to device register | Missing source images/model errors return pending; national registry lookup is absent |
 | Privacy/storage | AES-256-GCM snapshots, platform-protected keys, atomic writes, codecs off UI isolate, fail-closed missing keys, Android backup exclusions | Snapshot store is for small local field registers, not national-scale indexing |
@@ -48,7 +50,7 @@ See [full training report](../model_training/report.json), [split manifest](../m
 
 ## Current checks
 
-The latest source analyzer and 12 unit/widget tests pass. Seven standalone checks cover quality/burst rules, YUV/rotations/RGB/JPEG, record persistence, queue behavior, lifecycle completion and AES-GCM round trips/tamper rejection. Tests for removed archive/manifest features were removed with those implementations; queued enrolment, vaccine and metadata regression coverage remains.
+The latest source analyzer and 16 unit/widget tests pass. Seven standalone checks cover quality/burst rules, YUV/rotations/RGB/JPEG, record persistence, queue behavior, lifecycle completion and AES-GCM round trips/tamper rejection. Tests for removed archive/manifest features were removed with those implementations; queued enrolment, vaccine and metadata regression coverage remains.
 
 The required runner is `./tool/test_android.sh YOUR_DEVICE_ID`. Its attached-model Nokia tests passed: workflow/removal assertions, actual CameraX/GPS, native ONNX embeddings and a baseline-specific enrol/verify smoke test. The normal APK was built, installed and launched successfully; the full runner completed with exit 0. The smoke test uses selected public-image fixtures in an isolated encrypted template store and creates no production animal records. It is not the accuracy benchmark.
 
@@ -57,3 +59,13 @@ Production screenshots and device logs are under `muzzlid/test-results/`. Final 
 Attached-model device measurements: Nokia C32 / Android 13, 720×480 YUV, fresh GPS accuracy 24 m, five-frame raw collection 1,680 ms after pause/resume. Native embedding calls measured 8,656 ms cold and 1,196 ms warm in a debug integration run. These are individual call samples, not an AOT latency distribution. The baseline-specific enrol/verify/cache smoke test passed in 16 seconds.
 
 Final visual check: current production Home and Settings and the integration Luganda Settings capture were inspected on the Nokia. Saved offline is absent from Home and present in Settings; removed features are absent; Research model ready is visible; labels wrap without overflow. Existing production records remained present after installation. The temporary USB keep-awake setting was restored to its original value (0).
+
+## Current direct-camera acceptance
+
+The final `./tool/test_android.sh` run passed on the Nokia C32 after the full-screen/manual-photo update: analyzer clean, 16 unit/widget tests, seven standalone checks, encrypted registration/profile/vaccination/localization workflow, actual CameraX/GPS tests, five distinct JPEGs from five explicit shutter presses, progress retained after pause/resume, and the bundled ONNX model smoke test. Normal APK build/install/launch also passed. A final analyzer pass was clean.
+
+The native test exposed a stale Ready message during camera reopen; the message now resets to Hold steady, and automation waits for an enabled shutter. This prevents a press being treated as capture while the camera is still reopening.
+
+Production verification was inspected via ADB: Verify animal opens directly into a live camera, the preview fills the available width/height, no checklist or checkboxes are shown, and coordinates/audit time are absent. The registration camera/progress and review captures were also inspected. The guide's displayed cover-fit geometry maps back to the processed sensor ROI. Tests retain GPS/UTC values in stored records while hiding them from presentation. Vaccination administration/validity dates remain visible as clinical information.
+
+This run followed the user's final choice of Nokia rather than the initially requested Medium Phone emulator. No extra production scan was saved during the manual preview inspection. The temporary USB keep-awake setting was restored afterward. Existing user-deleted UI reference images were left untouched.

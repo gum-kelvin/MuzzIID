@@ -24,15 +24,20 @@ class AndroidEmbeddingEngine implements EmbeddingEngine {
     if (output?['version'] != version) {
       throw StateError('Model version changed');
     }
-    return unitVector((output!['vector'] as List)
-        .cast<num>()
-        .map((n) => n.toDouble())
-        .toList());
+    return unitVector(
+        (output!['vector'] as List)
+            .cast<num>()
+            .map((n) => n.toDouble())
+            .toList(),
+        dimensions: output['dimensions'] as int? ?? 512);
   }
 }
 
-List<double> unitVector(List<double> vector) {
-  if (vector.length != 512 || vector.any((n) => !n.isFinite)) {
+List<double> unitVector(List<double> vector, {int dimensions = 512}) {
+  if (dimensions < 32 ||
+      dimensions > 4096 ||
+      vector.length != dimensions ||
+      vector.any((n) => !n.isFinite)) {
     throw const FormatException('Invalid embedding');
   }
   final length = sqrt(vector.fold<double>(0, (s, n) => s + n * n));
@@ -60,6 +65,7 @@ class LocalModelVerification implements VerificationService {
         return const VerificationResult(VerificationStatus.pending);
       }
       final version = info['version'] as String;
+      final dimensions = info['dimensions'] as int? ?? 512;
       final high = (info['matchThreshold'] as num).toDouble();
       final low = (info['uncertainThreshold'] as num).toDouble();
       final margin = (info['minimumMargin'] as num).toDouble();
@@ -78,7 +84,8 @@ class LocalModelVerification implements VerificationService {
       final saved = await templates.read();
       final fresh = <Map<String, dynamic>>[];
       final candidates = <(Animal, double)>[];
-      final query = unitVector(await engine.embed(jpeg, version));
+      final query =
+          unitVector(await engine.embed(jpeg, version), dimensions: dimensions);
       for (final animal in all) {
         final digest =
             (await Sha256().hash(utf8.encode(animal.muzzleFrames.join())))
@@ -89,19 +96,22 @@ class LocalModelVerification implements VerificationService {
             e['digest'] == digest);
         List<double> vector;
         if (matching.isNotEmpty) {
-          vector = unitVector((matching.first['vector'] as List)
-              .cast<num>()
-              .map((n) => n.toDouble())
-              .toList());
+          vector = unitVector(
+              (matching.first['vector'] as List)
+                  .cast<num>()
+                  .map((n) => n.toDouble())
+                  .toList(),
+              dimensions: dimensions);
         } else {
-          final sum = List<double>.filled(512, 0);
+          final sum = List<double>.filled(dimensions, 0);
           for (final frame in animal.muzzleFrames) {
-            final sample = unitVector(await engine.embed(frame, version));
-            for (var i = 0; i < 512; i++) {
+            final sample = unitVector(await engine.embed(frame, version),
+                dimensions: dimensions);
+            for (var i = 0; i < dimensions; i++) {
               sum[i] += sample[i];
             }
           }
-          vector = unitVector(sum);
+          vector = unitVector(sum, dimensions: dimensions);
         }
         fresh.add({
           'id': animal.id,
@@ -110,7 +120,7 @@ class LocalModelVerification implements VerificationService {
           'vector': vector
         });
         var similarity = 0.0;
-        for (var i = 0; i < 512; i++) {
+        for (var i = 0; i < dimensions; i++) {
           similarity += query[i] * vector[i];
         }
         candidates.add((animal, similarity.clamp(-1, 1)));

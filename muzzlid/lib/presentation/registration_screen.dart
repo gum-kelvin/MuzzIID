@@ -16,14 +16,14 @@ final captureFramesProvider =
         Navigator.push<List<String>>(
             context, MaterialPageRoute(builder: (_) => const ScannerScreen())));
 
-class EnrolScreen extends ConsumerStatefulWidget {
+class RegistrationScreen extends ConsumerStatefulWidget {
   final Animal? animal;
-  const EnrolScreen({super.key, this.animal});
+  const RegistrationScreen({super.key, this.animal});
   @override
-  ConsumerState<EnrolScreen> createState() => _EnrolState();
+  ConsumerState<RegistrationScreen> createState() => _RegistrationState();
 }
 
-class _EnrolState extends ConsumerState<EnrolScreen> {
+class _RegistrationState extends ConsumerState<RegistrationScreen> {
   final form = GlobalKey<FormState>();
   late final owner = TextEditingController(text: widget.animal?.owner ?? '');
   late final place = TextEditingController(text: widget.animal?.location ?? '');
@@ -32,6 +32,7 @@ class _EnrolState extends ConsumerState<EnrolScreen> {
   int step = 0;
   bool locating = false, saving = false;
   String? gpsError;
+  Future<GeoFix?>? locationRequest;
   bool vaccineGiven = false;
   Set<String> selected = {};
   DateTime date = DateUtils.dateOnly(DateTime.now());
@@ -42,9 +43,9 @@ class _EnrolState extends ConsumerState<EnrolScreen> {
     if (gps == null) Future.microtask(locate);
   }
 
-  Future<void> locate() async {
-    if (locating) return;
-    setState(() => locating = true);
+  Future<GeoFix?> locate() => locationRequest ??= fetchLocation();
+  Future<GeoFix?> fetchLocation() async {
+    if (mounted) setState(() => locating = true);
     try {
       final fix = await ref.read(locationServiceProvider).locate();
       if (mounted) {
@@ -53,13 +54,16 @@ class _EnrolState extends ConsumerState<EnrolScreen> {
           gpsError = null;
         });
       }
+      return fix;
     } catch (e) {
       if (mounted) {
         setState(() => gpsError = e is StateError
             ? e.message.toString()
             : 'Unable to get GPS. Try again.');
       }
+      return null;
     } finally {
+      locationRequest = null;
       if (mounted) setState(() => locating = false);
     }
   }
@@ -73,7 +77,10 @@ class _EnrolState extends ConsumerState<EnrolScreen> {
 
   Future<void> capture() async {
     final result = await ref.read(captureFramesProvider)(context);
-    if (result != null && mounted && result.length == 5) {
+    if (result != null &&
+        mounted &&
+        result.length == 5 &&
+        result.toSet().length == 5) {
       setState(() {
         frames = result;
         step = 2;
@@ -83,10 +90,6 @@ class _EnrolState extends ConsumerState<EnrolScreen> {
 
   Future<void> next() async {
     if (!form.currentState!.validate()) return;
-    if (gps == null || (!editing && !gps!.fresh(DateTime.now()))) {
-      await locate();
-      return;
-    }
     if (editing) {
       await save();
       return;
@@ -96,9 +99,8 @@ class _EnrolState extends ConsumerState<EnrolScreen> {
   }
 
   Future<void> save() async {
-    if (gps == null || (!editing && frames.length != 5)) return;
-    if (!editing && !gps!.fresh(DateTime.now())) {
-      await locate();
+    if (saving ||
+        (!editing && (frames.length != 5 || frames.toSet().length != 5))) {
       return;
     }
     if (vaccineGiven && selected.isEmpty) {
@@ -108,6 +110,11 @@ class _EnrolState extends ConsumerState<EnrolScreen> {
     }
     setState(() => saving = true);
     try {
+      if (gps == null || !gps!.fresh(DateTime.now())) {
+        final fix = await locate();
+        if (fix == null) return;
+      }
+      if (!mounted) return;
       final now = DateTime.now().toUtc();
       final id = widget.animal?.id ?? 'LOCAL-${now.microsecondsSinceEpoch}';
       final record = editing
@@ -157,7 +164,7 @@ class _EnrolState extends ConsumerState<EnrolScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-            title: Text(tr(ref, editing ? 'Edit animal' : 'Enrol animal')),
+            title: Text(tr(ref, editing ? 'Edit animal' : 'Register animal')),
             actions: [
               if (!editing)
                 Padding(
@@ -204,16 +211,14 @@ class _EnrolState extends ConsumerState<EnrolScreen> {
                     loading: locating,
                     onRetry: locate,
                     error: gpsError),
-                detail(Icons.schedule, tr(ref, 'Time recorded automatically'),
-                    stamp(widget.animal?.created ?? DateTime.now())),
                 const SizedBox(height: 24),
                 FilledButton(
-                    onPressed: saving || locating ? null : next,
+                    onPressed: saving ? null : next,
                     child: Text(tr(ref,
                         editing ? 'Save changes' : 'Next: capture muzzle'))),
               ],
               if (step == 1) ...[
-                Text(tr(ref, 'Capture five clear frames'),
+                Text(tr(ref, 'Take five photos of the same muzzle'),
                     style: Theme.of(context).textTheme.headlineSmall),
                 const SizedBox(height: 16),
                 Text(tr(
@@ -249,14 +254,9 @@ class _EnrolState extends ConsumerState<EnrolScreen> {
                         child: Column(children: [
                           detail(Icons.person_outline, tr(ref, 'Owner name'),
                               owner.text),
-                          detail(
-                              Icons.location_on_outlined,
-                              tr(ref, 'Location'),
-                              '${place.text}\n${gps?.label ?? ''}'),
-                          detail(
-                              Icons.schedule,
-                              tr(ref, 'Time recorded automatically'),
-                              stamp(DateTime.now())),
+                          if (place.text.trim().isNotEmpty)
+                            detail(Icons.location_on_outlined,
+                                tr(ref, 'Location'), place.text),
                           Wrap(spacing: 6, runSpacing: 6, children: [
                             for (final frame in frames)
                               ClipRRect(
@@ -265,12 +265,15 @@ class _EnrolState extends ConsumerState<EnrolScreen> {
                                       width: 48, height: 48, fit: BoxFit.cover))
                           ]),
                           const SizedBox(height: 12),
-                          Text(tr(ref, '5-frame burst complete')),
+                          Text(tr(ref, '5 photos captured')),
                         ]))),
                 const SizedBox(height: 24),
                 FilledButton(
                     onPressed: saving ? null : save,
-                    child: Text(tr(ref, 'Save enrolment'))),
+                    child: Text(tr(ref, 'Save registration'))),
+                TextButton(
+                    onPressed: saving ? null : capture,
+                    child: Text(tr(ref, 'Retake photos'))),
                 TextButton(
                     onPressed: saving ? null : () => setState(() => step = 0),
                     child: Text(tr(ref, 'Edit details'))),

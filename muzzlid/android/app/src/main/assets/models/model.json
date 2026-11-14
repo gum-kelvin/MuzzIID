@@ -1,12 +1,26 @@
 {
   "schema": 1,
-  "version": "cattle-resnet50-arcface-research-v1",
-  "sha256": "b0e1839cf367e18c53aa649d182274d336bedbaae87cd834db791c8ae44bbdb4",
-  "inputSize": 224,
-  "dimensions": 512,
+  "version": "megadescriptor-l-384-int8-r1",
+  "displayName": "MegaDescriptor-L-384",
+  "sha256": "6b5dbc85e7283045ddafcc162003d206b384a6012b68af1531fe88fdbdcab3bc",
+  "inputSize": 384,
+  "dimensions": 1536,
+  "mean": [
+    0.5,
+    0.5,
+    0.5
+  ],
+  "std": [
+    0.5,
+    0.5,
+    0.5
+  ],
   "calibrated": true,
   "research": true,
-  "matchThreshold": 0.5715816484222412,
-  "uncertainThreshold": 0.47158164842224126,
-  "minimumMargin": 0.02
+  "matchThreshold": 0.528091926574707,
+  "uncertainThreshold": 0.42809192657470707,
+  "minimumMargin": 0.02,
+  "source": "BVRA/MegaDescriptor-L-384",
+  "revision": "33b3c6f4ee0c386a4126cc3dcd23843920613fa1",
+  "license": "CC-BY-NC-4.0"
 }

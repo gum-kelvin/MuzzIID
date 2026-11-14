@@ -1,16 +1,22 @@
-MuzzlID research embedding baseline
+MegaDescriptor-L-384 (BVRA / Bohemian Visual Recognition Alliance)
+Source: https://huggingface.co/BVRA/MegaDescriptor-L-384
+Pinned revision: 33b3c6f4ee0c386a4126cc3dcd23843920613fa1
+Model-card license: Creative Commons Attribution-NonCommercial 4.0 International.
+https://creativecommons.org/licenses/by-nc/4.0/
 
-Training data: Beef Cattle Muzzle/Noseprint database for individual identification.
-Creators: Yijie Xiong, Guoming Li, Galen Erickson (2022).
-DOI: https://doi.org/10.5281/zenodo.6324361
-Source: https://zenodo.org/records/6324361
-License: Creative Commons Attribution 4.0 International (CC BY 4.0).
-https://creativecommons.org/licenses/by/4.0/
-Changes: identities with fewer than seven images excluded; identity-level split;
-ImageNet ResNet50 features and an ArcFace-trained 512-D projection exported to ONNX.
+Citation: Cermak, Vojtech; Picek, Lukas; Adam, Lukas; Papafitsoros, Kostas.
+WildlifeDatasets: An Open-Source Toolkit for Animal Re-Identification.
+Proceedings of WACV 2024, pp. 5953-5963.
 
-Architecture reference: https://github.com/darasiemi/Animal_Biometrics_System
-No source code or pretrained weights were copied from that repository.
-Backbone initialization: torchvision ResNet50 IMAGENET1K_V2.
-Torchvision source: https://github.com/pytorch/vision (BSD 3-Clause).
-Research prototype; identification results require field validation.
+Changes for this application: fixed [1,3,384,384] ONNX export (opset 17),
+INT8 per-channel dynamic quantization of MatMul/Gemm weights,
+L2-normalized 1536-D outputs and local small-pilot threshold calibration.
+Input preprocessing follows the user's model-card example: RGB bilinear
+384x384 resize, values /255, mean [.5,.5,.5], std [.5,.5,.5].
+No image or personal record is sent to Hugging Face by the application.
+
+Pilot data and test fixtures: Xiong, Yijie; Li, Guoming; Erickson, Galen (2022).
+Beef Cattle Muzzle/Noseprint database, https://doi.org/10.5281/zenodo.6324361
+CC BY 4.0, https://creativecommons.org/licenses/by/4.0/
+The model may have seen this dataset during pretraining; pilot scores do not
+establish independent generalization, field accuracy or a certified FMR.

@@ -18,15 +18,25 @@ class ModelStatusCard extends ConsumerWidget {
                     loading: () => const LinearProgressIndicator(),
                     error: (error, stack) => Text(tr(ref,
                         'Model could not load. Check the model configuration.')),
-                    data: (status) => Text(tr(
-                        ref,
-                        status['ready'] != true
-                            ? 'Model not installed. Scans can still be saved privately.'
-                            : status['calibrated'] != true
-                                ? 'Model installed. Calibration is required before identification.'
-                                : status['research'] == true
-                                    ? 'Research model ready. Results need field validation.'
-                                    : 'Model ready. Verification compares against records saved on this device.')),
+                    data: (status) => Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (status['modelName'] is String) ...[
+                            Text(status['modelName'] as String,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w600)),
+                            const SizedBox(height: 8),
+                          ],
+                          Text(tr(
+                              ref,
+                              status['ready'] != true
+                                  ? 'Model not installed. Scans can still be saved privately.'
+                                  : status['calibrated'] != true
+                                      ? 'Model installed. Calibration is required before identification.'
+                                      : status['research'] == true
+                                          ? 'Research model ready. Results need field validation.'
+                                          : 'Model ready. Verification compares against records saved on this device.'))
+                        ]),
                   ),
               const SizedBox(height: 8),
               TextButton.icon(
