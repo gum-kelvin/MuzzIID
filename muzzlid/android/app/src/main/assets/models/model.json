@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "version": "cattle-resnet50-arcface-research-v1",
+  "sha256": "b0e1839cf367e18c53aa649d182274d336bedbaae87cd834db791c8ae44bbdb4",
+  "inputSize": 224,
+  "dimensions": 512,
+  "calibrated": true,
+  "research": true,
+  "matchThreshold": 0.5715816484222412,
+  "uncertainThreshold": 0.47158164842224126,
+  "minimumMargin": 0.02
+}

@@ -1,0 +1,108 @@
+
+MuzzlID: System Architecture & Developer Implementation Specification
+1. High-Level System Architecture
+MuzzlID utilizes an Edge-Cloud Hybrid Architecture built specifically to tolerate intermittent cellular connectivity (2G/3G/4G edge drops) common across rural districts and livestock corridors in Uganda.
+The design separates lightweight real-time computer vision (localization and quality gating) on the mobile device from compute-intensive deep metric embedding extraction and open-set vector retrieval on a centralized cloud backend. When offline, the mobile client degrades gracefully by caching scans and queueing transactions locally until connectivity resumes.
+2. End-to-End Data Pipeline
+Every biometric scan follows a deterministic five-stage lifecycle from camera frame acquisition to identity resolution.
+Stage 1: Client-Side Edge Capture & Preprocessing
+Camera Acquisition: Managed via Android CameraX (ImageAnalysis use case) streaming YUV_420_888 frames at 640×480 resolution to minimize memory overhead.
+Real-Time Localization: A quantized YOLOv8-nano (INT8 or FP16 .onnx model, <3.5MB) executes on-device via ONNX Runtime Mobile at 15–30 FPS. Note: If field lighting causes bounding-box jitter, the UI provides an optional manual static reticle fallback ("guided capture").
+Automated Quality Gates: Before enabling capture, a lightweight OpenCV-Android pipeline evaluates the cropped Region of Interest (ROI):
+Sharpness (Focus): Laplacian variance
+σ
+2>120.0 to reject motion blur from restless cattle.
+Exposure/Lighting: Mean pixel luminance within [45,215] (on an 8-bit scale) to prevent washed-out glare or deep shadow occlusion.
+Framing & Scale: Muzzle bounding box must occupy $\ge 40\%$ of the target reticle area with all four corners inside frame margins.
+Multi-Frame Burst (Enrolment): During new animal enrolment, the app automatically captures 5 consecutive valid frames over ~1.5 seconds to account for micro-angle variations.
+Stage 2: Payload Packaging & Transport
+Image Encoding: The cropped muzzle ROI is compressed to JPEG at Quality 85% (balancing dermatoglyphic ridge preservation against rural bandwidth constraints, yielding ~35–60 KB per image).
+Metadata Envelope: Packaged as multipart/form-data over HTTPS (TLS 1.3):
+device_id (UUID), operator_id (JWT subject)
+timestamp_utc (ISO-8601)
+gps_coords (latitude, longitude, accuracy_meters)
+scan_mode (VERIFY or ENROL)
+legacy_tag_id (Optional string if cross-referencing physical ear tags)
+Stage 3: Server-Side Preprocessing & Normalization
+Validation: FastAPI verifies image magic bytes, dimensions, and payload integrity.
+Contrast Normalization (Configurable): Applies Contrast Limited Adaptive Histogram Equalization (CLAHE) (clipLimit=2.0, tileGridSize=(8,8)) on the luminance channel (LAB color space) to standardize contrast across dusty or harshly lit muzzles. (Flagged via environment config ENABLE_CLAHE=true for A/B validation during pilot benchmarking).
+Tensor Formatting: Resized via bilinear interpolation to 224×224×3 and normalized using standard ImageNet channel means (μ=[0.485,0.456,0.406]) and standard deviations (σ=[0.229,0.224,0.225]).
+Stage 4: Feature Extraction Engine
+Model Architecture: ResNet50 backbone initialized with pre-trained weights and fine-tuned end-to-end on bovine muzzle datasets using ArcFace (Additive Angular Margin Loss) to enforce tight intra-class clustering and wide inter-class separation.
+Projection Head: Global Average Pooling → Linear(2048, 512) → BatchNorm1d(512) → L2 Normalization layer.
+Output: A unit-length 512-dimensional floating-point vector v∈
+R
+512 where ∥v∥2=1. (During enrolment, the 5 burst embeddings are averaged and re-normalized into a single master template or stored as multi-template rows).
+Stage 5: Open-Set Matching & Verification Engine
+Similarity Metric: Because embeddings are L2-normalized, cosine similarity simplifies to an inner product:
+Sc(q,e)=q⋅e
+Vector Query: pgvector executes an Approximate Nearest Neighbor (ANN) search (<=> cosine distance operator) returning the top-k (k=5) candidates.
+Open-Set Decision Logic: Evaluates the top match score Smax against a calibrated operating threshold τ (benchmarked against target False Match Rate $\text{FMR} \le 0.1\%$):
+Smax≥τ (e.g., τ=0.78): MATCH CONFIRMED. Returns full animal profile, owner verification, and health/vaccination records.
+τlow≤Smax<τ (e.g., 0.68≤Smax<0.78): AMBIGUOUS / LOW CONFIDENCE. Prompts operator to wipe muzzle moisture/dirt and re-scan.
+Smax<τlow: UNREGISTERED ANIMAL. Declares open-set unknown status and presents one-tap transition to the Enrolment workflow.
+3. Detailed Component & Tech Stack Breakdown
+A. Frontend (Android Mobile Application)
+Language & UI: Kotlin 1.9+, Jetpack Compose (Material 3) with high-contrast outdoor daylight theme.
+Camera & Vision: Android CameraX (1.3+), onnxruntime-android (1.17+), OpenCV-Android SDK.
+Local Persistence & Offline Engine:
+Room Database (SQLite): Caches regional herd manifests (downloaded prior to field deployment) and stores pending offline scan payloads (PendingScanEntity).
+WorkManager: Configures a PeriodicWorkRequest and network-constrained OneTimeWorkRequest (NetworkType.CONNECTED) with exponential backoff to drain queued scans automatically when cellular data stabilizes.
+Networking: Retrofit2 + OkHttp3 with certificate pinning and automatic JWT refresh interceptor.
+B. Backend API Server
+Framework: Python 3.11+, FastAPI (ASGI via Uvicorn + Gunicorn process manager).
+Core Endpoints:
+POST /api/v1/auth/login — Authenticates field officers; returns short-lived Access JWT (15 min) + Refresh Token (7 days).
+POST /api/v1/biometrics/verify — Accepts single scan payload; returns match status, confidence score, and animal/owner record.
+POST /api/v1/biometrics/enrol — Accepts 5-image burst + farmer/animal metadata; creates new entity and biometric template.
+POST /api/v1/sync/batch — Processes queued offline scans uploaded in bulk by WorkManager.
+GET /api/v1/manifests/district/{district_id} — Downloads compressed metadata subset for offline field lookup.
+Security: Role-Based Access Control (VET_OFFICER, COOP_ADMIN, AUDITOR), TLS 1.3 in transit, and AES-256-GCM encryption at rest for farmer PII fields (national_id, phone_number).
+C. Model & AI Pipeline
+Training Stack: PyTorch 2.2+, TorchVision, Albumentations (for synthetic dust, glare, and affine augmentations during training).
+Production Serving: Exported to ONNX (opset=17) and served via ONNX Runtime on CPU/GPU execution providers for deterministic sub-150ms server inference.
+Model Registry: Versioned model artifacts (resnet50_muzzle_v1.2.onnx) tracked alongside model_version tags in the database so embeddings generated by incompatible model versions are never compared directly.
+D. Database & Storage Layer
+Engine: PostgreSQL 16 + pgvector (0.7.0+) deployed via Docker Compose.
+Indexing Strategy: HNSW (Hierarchical Navigable Small World) index on biometric_templates.embedding using vector_cosine_ops (m = 16, ef_construction = 64), ensuring sub-50ms query times even as national herd registries scale past 500,000 animals.
+Core Relational Schema:
+4. User Storyboard & Field Workflow
+Scene 1: Pre-Deployment Sync (Morning, District Veterinary Office)
+Actor: Dr. Kato, District Veterinary Officer (DVO).
+Action: Before departing for a weekly rural livestock auction market where cellular coverage is unreliable, Dr. Kato opens MuzzlID on his Android device over office Wi-Fi and taps "Sync District Manifest."
+System Response: The app downloads encrypted metadata for registered herds in the sub-county and verifies that the local YOLOv8-nano model is ready.
+Scene 2: Market Gate Inspection & Live Scan
+Context: At the market gate, a trader presents an Ankole-cross bull for clearance and Foot-and-Mouth Disease (FMD) vaccination verification. Signal bars show intermittent 2G/Edge connectivity.
+Action: Dr. Kato selects "Verify Animal", wipes excess moisture from the bull's muzzle with a cloth, and holds the smartphone ~20 cm away.
+System Response: The CameraX viewfinder draws a dynamic bounding box tracking the muzzle. Initially yellow ("Move Closer"), the box turns solid green once sharpness (
+σ
+2>120) and lighting thresholds pass, automatically capturing the frame with haptic feedback.
+Scene 3A: Online Verification (Verified Match)
+System Response: A brief 3G burst transmits the 45 KB cropped JPEG to the FastAPI server. Within 1.1 seconds, the screen displays a green VERIFIED MATCH banner (Score: 0.89):
+Animal ID: UG-MBR-2026-04192
+Registered Owner: Katusiime Samuel (Mbarara District)
+Health Status: FMD Vaccinated (Valid until Dec 2026) — CLEARED FOR TRADE.
+Scene 3B: Handling an Unregistered Animal (New Enrolment)
+Context: The next animal scanned returns an open-set UNREGISTERED status (Max Score: 0.41 < 0.78).
+Action: Dr. Kato verifies ownership paperwork with the farmer and taps "Enrol New Animal." He enters the farmer's National ID (NIN), phone number, and breed details, then holds the camera steady for 1.5 seconds as the app captures a 5-frame burst.
+System Response: Because cellular data drops completely at that moment, the app displays an amber badge: "Saved Offline (1 Pending Sync)" and generates a local receipt ID.
+Scene 4: Automatic Background Sync
+Action: Two hours later, Dr. Kato drives back toward the main highway where 4G coverage resumes.
+System Response: Android WorkManager wakes up automatically in the background, uploads the queued enrolment burst and market audit logs to /api/v1/sync/batch, receives server confirmation, and clears the local queue without user intervention.
+5. Missing Elements, Edge Cases & Production Safeguards
+To ensure production readiness in Ugandan field environments, engineers must implement the following safeguards:
+Duplicate Enrolment Prevention (De-duplication Guard):
+Risk: An operator accidentally enrols an already-registered cow while offline, creating duplicate identities.
+Mitigation: During POST /api/v1/sync/batch, the backend runs every incoming offline enrolment embedding through the Verify pipeline first. If Smax≥τ, the server flags a DUPLICATE_CONFLICT status, links the scan to the existing animal_id, and notifies the administrator rather than minting a duplicate record.
+Physical Hygiene & Environmental Prompting:
+Risk: Mud, saliva sheen, or cattle nose-rings obscure dermatoglyphic ridge patterns and degrade cosine similarity.
+Mitigation: Build a mandatory pre-scan checklist icon ("Wipe muzzle dry") on the viewfinder and train YOLOv8 with negative/occluded samples so heavy mud coverage triggers a "Clean Muzzle & Retry" quality gate rejection.
+Model Version Isolation:
+Risk: Updating the ResNet50 model weights changes the embedding latent space, invalidating cosine distances against older vectors.
+Mitigation: Tag every row in biometric_templates with model_version. Deploy zero-downtime migrations by storing raw encrypted enrolment images in cold object storage (e.g., S3/MinIO) so templates can be batch-recomputed whenever a new model version is promoted.
+Data Protection & Privacy Compliance (Uganda Data Protection and Privacy Act, 2019):
+Requirement: Farmer NINs and phone numbers constitute regulated personal data.
+Mitigation: Enforce strict separation between biometric vector tables and PII tables (linked only via pseudonymous UUIDs), encrypt PII columns using KMS-managed AES-256 keys, and enforce automated token revocation if a field device is reported lost or stolen.
+Anti-Spoofing / Replay Attack Prevention:
+Risk: Malicious actors attempting to scan a printed photograph or second phone screen of a legitimate cow's muzzle.
+Mitigation: Require live camera motion variance across consecutive frames prior to capture (rejecting static 2D planar textures via optical flow variance) and bind every scan to hardware-backed GPS coordinates and device attestation (Play Integrity API).

@@ -1,0 +1,6 @@
+{
+  "positive_similarity_before_jpeg": 0.9740104675292969,
+  "negative_similarity_before_jpeg": -0.24336214363574982,
+  "model_version": "cattle-resnet50-arcface-research-v1:b0e1839cf367e18c53aa649d182274d336bedbaae87cd834db791c8ae44bbdb4",
+  "purpose": "Selected smoke examples, not accuracy benchmark"
+}

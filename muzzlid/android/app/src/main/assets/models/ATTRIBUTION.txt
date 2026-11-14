@@ -1,0 +1,16 @@
+MuzzlID research embedding baseline
+
+Training data: Beef Cattle Muzzle/Noseprint database for individual identification.
+Creators: Yijie Xiong, Guoming Li, Galen Erickson (2022).
+DOI: https://doi.org/10.5281/zenodo.6324361
+Source: https://zenodo.org/records/6324361
+License: Creative Commons Attribution 4.0 International (CC BY 4.0).
+https://creativecommons.org/licenses/by/4.0/
+Changes: identities with fewer than seven images excluded; identity-level split;
+ImageNet ResNet50 features and an ArcFace-trained 512-D projection exported to ONNX.
+
+Architecture reference: https://github.com/darasiemi/Animal_Biometrics_System
+No source code or pretrained weights were copied from that repository.
+Backbone initialization: torchvision ResNet50 IMAGENET1K_V2.
+Torchvision source: https://github.com/pytorch/vision (BSD 3-Clause).
+Research prototype; identification results require field validation.

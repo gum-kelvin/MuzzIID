@@ -1,0 +1,63 @@
+{
+  "title": "Beef Cattle Muzzle/Noseprint database for individual identification",
+  "doi": "10.5281/zenodo.6324361",
+  "publication_date": "2022-03-03",
+  "description": "<p>This&nbsp;dataset contains muzzle/noseprint images for beef cattle. A total of 4923 muzzle images for 268 feedyard yearlings in the Midwest US were collected from March to July 2021, using a mirrorless digital camera (26 MP maximum resolution) and a 70-300 mm F4-5.6 focal lens. All images were taken outside of the pen did not create any contact or interference&nbsp;with the animals. These images covered three common US feedyard cattle breeds, including Angus, Angus x Hereford, and Continental x British cross). This database only contains the clean and cropped images showing the cattle muzzle area.&nbsp;</p>\n\n<p>All images are housed in individual folders in the&nbsp;<strong>.zip file:&nbsp;</strong>&ldquo;BeefCattle_Muzzle_database.zip&rdquo;. Each folder contains pictures from the same animal. On average, there were more than 12 images collected for each animal.&nbsp;</p>",
+  "access_right": "open",
+  "creators": [
+    {
+      "name": "Xiong, Yijie",
+      "affiliation": "University of Nebraska-Lincoln",
+      "orcid": "0000-0003-2246-7448"
+    },
+    {
+      "name": "Li, Guoming",
+      "affiliation": "Iowa State University",
+      "orcid": "0000-0001-7624-8051"
+    },
+    {
+      "name": "Erickson, Galen",
+      "affiliation": "University of Nebraska-Lincoln"
+    }
+  ],
+  "keywords": [
+    "individualization",
+    "classification",
+    "animal",
+    "biomarker",
+    "livestock"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "10.3390/ani12111453",
+      "relation": "isSourceOf",
+      "resource_type": "publication-article",
+      "scheme": "doi"
+    }
+  ],
+  "resource_type": {
+    "title": "Photo",
+    "type": "image",
+    "subtype": "photo"
+  },
+  "license": {
+    "id": "cc-by-4.0"
+  },
+  "communities": [
+    {
+      "id": "precision-livestock-farming"
+    }
+  ],
+  "relations": {
+    "version": [
+      {
+        "index": 0,
+        "is_last": true,
+        "parent": {
+          "pid_type": "recid",
+          "pid_value": "6324360"
+        }
+      }
+    ]
+  }
+}

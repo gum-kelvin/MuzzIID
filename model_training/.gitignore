@@ -1,0 +1,6 @@
+dataset/
+cattle.zip
+features.pt
+baseline.pt
+*.log
+__pycache__/

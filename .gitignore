@@ -1,0 +1,41 @@
+# Local tools, credentials and environments
+backend_venv/
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+.idea/
+.vscode/
+**/__pycache__/
+**/.pytest_cache/
+*.pyc
+*.log
+*.pem
+*.key
+*.jks
+*.keystore
+**/key.properties
+
+# Device records, captures, binaries and local exports
+*.db
+*.db-shm
+*.db-wal
+*.sqlite*
+*.apk
+*.aab
+*.zip
+exports/
+muzzlid/test-results/
+
+# Training caches/checkpoints; the shipped ONNX model is tracked
+model_training/dataset/
+model_training/cattle.zip
+model_training/features.pt
+model_training/baseline.pt
+backend/models/*.pth
+
+# Vendored research checkouts and generated editor telemetry
+literature review/*
+!literature review/links.txt
+.github/modernize/

@@ -1,0 +1,27 @@
+name: muzzlid
+description: Private offline cattle field register.
+publish_to: none
+version: 0.1.0+1
+environment:
+  sdk: '>=3.6.0 <4.0.0'
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  flutter_riverpod: ^2.6.1
+  flutter_secure_storage: ^9.2.4
+  cryptography: ^2.7.0
+  path_provider: ^2.1.5
+  geolocator_android: ^5.0.3
+  camera: ^0.12.1
+  image: ^4.5.4
+  go_router: ^14.8.1
+dev_dependencies:
+  integration_test:
+    sdk: flutter
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+flutter:
+  uses-material-design: true
