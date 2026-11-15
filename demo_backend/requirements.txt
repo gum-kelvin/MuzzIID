@@ -1,0 +1,10 @@
+# Use the existing .venv. No automatic installation is performed.
+fastapi
+uvicorn
+numpy
+pillow
+torch
+torchvision
+timm
+httpx
+pytest

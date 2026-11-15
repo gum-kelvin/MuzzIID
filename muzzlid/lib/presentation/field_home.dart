@@ -1,3 +1,4 @@
+import '../data/remote_backend.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../domain/register.dart';
@@ -24,6 +25,7 @@ class FieldHome extends ConsumerWidget {
         (time: item.time, label: 'Verification', animal: null),
     ]..sort((a, b) => b.time.compareTo(a.time));
     return pageBody([
+      if (remoteMode) const Text('MegaDescriptor remote demonstration'),
       FilledButton.icon(
           onPressed: () => Navigator.push(context,
               MaterialPageRoute(builder: (_) => const PreScanScreen())),

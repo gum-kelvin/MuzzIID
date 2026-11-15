@@ -1,3 +1,4 @@
+import '../data/remote_backend.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../data/encrypted_register.dart';
@@ -33,7 +34,7 @@ class LanguageController extends StateNotifier<String> {
 }
 
 final repositoryProvider = Provider<RegisterRepository>(
-  (ref) => EncryptedRegister(),
+  (ref) => remoteMode ? RemoteRegister() : EncryptedRegister(),
 );
 final registerProvider =
     AsyncNotifierProvider<RegisterController, List<Animal>>(
@@ -49,7 +50,9 @@ class RegisterController extends AsyncNotifier<List<Animal>> {
     final next = _tail.then((_) async {
       final animals = change([...state.requireValue]);
       await ref.read(repositoryProvider).save(animals);
-      state = AsyncData(animals);
+      state = AsyncData(
+          remoteMode ? await ref.read(repositoryProvider).read() : animals);
+      if (remoteMode) ref.invalidate(remoteAnimalProvider);
     });
     // A failed write must not poison later operations.
     _tail = next.then<void>((_) {}, onError: (Object _, StackTrace __) {});
@@ -100,5 +103,10 @@ class RegisterController extends AsyncNotifier<List<Animal>> {
   Future<void> remove(String id) =>
       _mutate((all) => all.where((a) => a.id != id).toList());
 }
+
+final remoteAnimalProvider = FutureProvider.family<Animal, String>(
+    (ref, id) async => Animal.fromJson(Map<String, dynamic>.from(
+        await RemoteBackend()
+            .request('GET', '/animals/${Uri.encodeComponent(id)}'))));
 
 final shellTabProvider = StateProvider<int>((ref) => 0);

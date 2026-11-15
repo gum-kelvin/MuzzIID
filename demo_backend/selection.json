@@ -1,0 +1,263 @@
+{
+  "seed": "lexical-first-seven-v1",
+  "counts": {
+    "cattle_0100": 8,
+    "cattle_0200": 10,
+    "cattle_0300": 17
+  },
+  "samples": [
+    {
+      "animal": "cattle_0100",
+      "path": "cattle_0100/cattle_0100_DSCF3856.jpg",
+      "role": "enrollment",
+      "sha256": "f61f547346b56520afbd5ba0bb6a363fab0033f667639d0993979ae3a5d35cfe",
+      "pixel_sha256": "0646fc8f29a6d9896eecc1ceec895911c7309bfd2f72fccff2a9acbda3c14f57",
+      "format": "JPEG",
+      "size": [
+        2088,
+        1768
+      ]
+    },
+    {
+      "animal": "cattle_0100",
+      "path": "cattle_0100/cattle_0100_DSCF3858.jpg",
+      "role": "enrollment",
+      "sha256": "0713197fc846195c326343f43fe540992b8f8c04d49bf6ab9e953df10350ebe4",
+      "pixel_sha256": "1c7d690f14b02f041cb48910c6e3180f2e2e979363f8b7c94e83cceeefcf4ed2",
+      "format": "JPEG",
+      "size": [
+        2944,
+        2352
+      ]
+    },
+    {
+      "animal": "cattle_0100",
+      "path": "cattle_0100/cattle_0100_DSCF3859.jpg",
+      "role": "enrollment",
+      "sha256": "20777c2b3b7b792046249b77c610049febdfd3b67bbd42a62e4fb49f5bb07e42",
+      "pixel_sha256": "4c7661c8706ecd45cb8aa8d99baaf284a3425e345a7b1ad8691fbd4fc6cb21be",
+      "format": "JPEG",
+      "size": [
+        2736,
+        2120
+      ]
+    },
+    {
+      "animal": "cattle_0100",
+      "path": "cattle_0100/cattle_0100_DSCF3860.jpg",
+      "role": "enrollment",
+      "sha256": "56421db4f4e72d9b914b2b0fbacba29236bbcd1c917d434a2caa10e61840675b",
+      "pixel_sha256": "0e1d12c8b5f8fb0e8a179e8b71b022311ccde324d8bfe8cbe38f8cc8d66234ed",
+      "format": "JPEG",
+      "size": [
+        2728,
+        2136
+      ]
+    },
+    {
+      "animal": "cattle_0100",
+      "path": "cattle_0100/cattle_0100_DSCF3861.jpg",
+      "role": "enrollment",
+      "sha256": "6fa6c83a9802552d78beee63a04657833629c53e2f36e0b1d660528b9cd37ba4",
+      "pixel_sha256": "2a4280a94a6141fc8fc5c1d9d7bb69ce423fb92526d9d0072d2ff2ce2c32e0e2",
+      "format": "JPEG",
+      "size": [
+        2576,
+        2048
+      ]
+    },
+    {
+      "animal": "cattle_0100",
+      "path": "cattle_0100/cattle_0100_DSCF3862.jpg",
+      "role": "probe",
+      "sha256": "e0525fae101362f3ba1063b9edabd59b9a353ff5cad340ffda215f770d592b0b",
+      "pixel_sha256": "074c8853bcef57a819bf0d339ad167d5f998e6e299681a4393641e18d5317c5b",
+      "format": "JPEG",
+      "size": [
+        2392,
+        2000
+      ]
+    },
+    {
+      "animal": "cattle_0100",
+      "path": "cattle_0100/cattle_0100_DSCF3865.jpg",
+      "role": "probe",
+      "sha256": "1e2e0c4b7e8085845bb35f33df9ead17db59029ad544818148ef885f7c95d066",
+      "pixel_sha256": "1512801aa575ff96643e5ef5e652891751c6a5e7c57a7bc95b7680dd3995cf54",
+      "format": "JPEG",
+      "size": [
+        1984,
+        1592
+      ]
+    },
+    {
+      "animal": "cattle_0200",
+      "path": "cattle_0200/cattle_0200_DJI_0115.jpg",
+      "role": "enrollment",
+      "sha256": "2857d297fe1f4e3836b71eba2bfa3fbce87f6d3ead5dd760539500e901bb304c",
+      "pixel_sha256": "7a04b92bd78dea1dad9134921b4172c66042413ce37072684e9d95d119aadbb8",
+      "format": "JPEG",
+      "size": [
+        2496,
+        1472
+      ]
+    },
+    {
+      "animal": "cattle_0200",
+      "path": "cattle_0200/cattle_0200_DJI_0116.jpg",
+      "role": "enrollment",
+      "sha256": "481a4bcef3cd652d4cf96dad08af84c04a332f8c2f1af5f745da7ea49e07c595",
+      "pixel_sha256": "f0c64b458a155f275e74ee1d7858845a29b369400d3309cc8ae792dcc8704c45",
+      "format": "JPEG",
+      "size": [
+        1840,
+        1424
+      ]
+    },
+    {
+      "animal": "cattle_0200",
+      "path": "cattle_0200/cattle_0200_DJI_0119.jpg",
+      "role": "enrollment",
+      "sha256": "8d06746f6c251ce0389b690e25358e8e73b193c13e42d603515c1e03197f178f",
+      "pixel_sha256": "29083f5bc66899f69e6314ecddb9a84a92cbf75b9977232f62a430d629094a0a",
+      "format": "JPEG",
+      "size": [
+        2032,
+        1504
+      ]
+    },
+    {
+      "animal": "cattle_0200",
+      "path": "cattle_0200/cattle_0200_DSCF3868.jpg",
+      "role": "enrollment",
+      "sha256": "7c18d4fbc4557fde75b4596c2441c710537bbef652a678834c90894096938bac",
+      "pixel_sha256": "78cee77e5ce87a074b60fd2431613440a8a4bf32cd9fb8ab4530503a51224f2d",
+      "format": "JPEG",
+      "size": [
+        2104,
+        1840
+      ]
+    },
+    {
+      "animal": "cattle_0200",
+      "path": "cattle_0200/cattle_0200_DSCF3870.jpg",
+      "role": "enrollment",
+      "sha256": "2943e969f6851c876a4d708b41bb3684caa8cedb5cab129bc2e3d86d64694e0a",
+      "pixel_sha256": "1bef64be257211bb4edfe054dffe49515876a5f0f4659850c0d5ffb0ca2b0672",
+      "format": "JPEG",
+      "size": [
+        2024,
+        1744
+      ]
+    },
+    {
+      "animal": "cattle_0200",
+      "path": "cattle_0200/cattle_0200_DSCF3871.jpg",
+      "role": "probe",
+      "sha256": "70683f4757c00d71c09c7d7ce6838616e675a3381c8ffc110dbfb8526f1036c6",
+      "pixel_sha256": "3281da567fe17df4b64a96634eb000ce685d64487727b63f8fbb076a89b17787",
+      "format": "JPEG",
+      "size": [
+        2032,
+        1712
+      ]
+    },
+    {
+      "animal": "cattle_0200",
+      "path": "cattle_0200/cattle_0200_DSCF3873.jpg",
+      "role": "probe",
+      "sha256": "591d54fc20bb4201f1089fa25dec4088a596b253a54f6be5b21e25f32c71bdfd",
+      "pixel_sha256": "70fee3557b030438673154138b9897dff73c6d2393b849e55cd2380f1b0d85f5",
+      "format": "JPEG",
+      "size": [
+        2088,
+        1656
+      ]
+    },
+    {
+      "animal": "cattle_0300",
+      "path": "cattle_0300/cattle_0300_DJI_0122.jpg",
+      "role": "enrollment",
+      "sha256": "320a0ff7815e14563283daa8c56fc4853de10e8d46167fdde8c37a4857a3ebc6",
+      "pixel_sha256": "a0fd8edad0b72de26796c179d934dbc66895cee1fef4d51296d1172bec28aee7",
+      "format": "JPEG",
+      "size": [
+        2112,
+        1840
+      ]
+    },
+    {
+      "animal": "cattle_0300",
+      "path": "cattle_0300/cattle_0300_DJI_0123.jpg",
+      "role": "enrollment",
+      "sha256": "f2dd07c36af12bec2fc7fd45a87a8ee83b43f30056a570e5874f573b6e5f4c7b",
+      "pixel_sha256": "43aa48bf07b1d3c918e7a23af043e2c3c2518209e8f82fc76f03f2982993cfb0",
+      "format": "JPEG",
+      "size": [
+        2288,
+        1888
+      ]
+    },
+    {
+      "animal": "cattle_0300",
+      "path": "cattle_0300/cattle_0300_DJI_0124.jpg",
+      "role": "enrollment",
+      "sha256": "c956a6ba97dd5f2fdfe48cf52b82d209c71f946c51926b78dfc067f28f66c1c1",
+      "pixel_sha256": "16d52b3f456000c39866796ab1b3cdb02e732e7fef481d7c40f66a3ad084aca1",
+      "format": "JPEG",
+      "size": [
+        2384,
+        2296
+      ]
+    },
+    {
+      "animal": "cattle_0300",
+      "path": "cattle_0300/cattle_0300_DJI_0125.jpg",
+      "role": "enrollment",
+      "sha256": "8e1898263accb04d4242f09916dfe2d491e133a045ac503947358c7166e03d5c",
+      "pixel_sha256": "6a3a03ae390f9cb21c7b1274c3cd6384d373eceb13c6d619520353980f9d593a",
+      "format": "JPEG",
+      "size": [
+        2336,
+        2128
+      ]
+    },
+    {
+      "animal": "cattle_0300",
+      "path": "cattle_0300/cattle_0300_DJI_0128.jpg",
+      "role": "enrollment",
+      "sha256": "1810caa13e667f7d7e41269197579adea7017396f36b2d9fbb7d2bd606567894",
+      "pixel_sha256": "3021761a394db40403d41d6a5bdbe84cdcdf9062bb90fe6875e1332dea9c53be",
+      "format": "JPEG",
+      "size": [
+        1920,
+        1552
+      ]
+    },
+    {
+      "animal": "cattle_0300",
+      "path": "cattle_0300/cattle_0300_DSCF3880.jpg",
+      "role": "probe",
+      "sha256": "dd6b9ffe605ca953b75ca71822586785d6f18c3e17b64e7e7599712f104d115b",
+      "pixel_sha256": "224eb4e5d8de9720f93cd77f30970c9c3cce64e4ead04b9d9373e795aecb7947",
+      "format": "JPEG",
+      "size": [
+        2216,
+        1768
+      ]
+    },
+    {
+      "animal": "cattle_0300",
+      "path": "cattle_0300/cattle_0300_DSCF3881.jpg",
+      "role": "probe",
+      "sha256": "0a4f3c8c5295e53504eccba774e5c4a1e36b747f36e586ee459df690cd8032c1",
+      "pixel_sha256": "7a460bdc9c7e7ae7e6539691e35e4ba7a3d341aaf534de6cb28d860a050c522d",
+      "format": "JPEG",
+      "size": [
+        2104,
+        1624
+      ]
+    }
+  ],
+  "notes": "C is unknown initially; its five enrollment files are reserved for subsequent enrollment. No calibration identities in this split."
+}

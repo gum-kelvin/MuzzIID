@@ -1,3 +1,4 @@
+import '../data/remote_backend.dart';
 import 'model_status.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,7 +22,7 @@ class _PreScanState extends ConsumerState<PreScanScreen> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(locate);
+    if (!remoteMode) Future.microtask(locate);
   }
 
   Future<void> locate() async {
@@ -68,12 +69,18 @@ class _PreScanState extends ConsumerState<PreScanScreen> {
                     'Good light, steady animal'
                   ][i]))),
         const SizedBox(height: 24),
-        const ModelStatusCard(),
+        if (remoteMode)
+          const Text(
+              'Remote MegaDescriptor CPU demo. GPS optional. Printed photos are supported; no liveness check.')
+        else
+          const ModelStatusCard(),
         const SizedBox(height: 16),
         FilledButton(
-            onPressed: checks.every((v) => v) && gps != null && !locating
+            onPressed: checks.every((v) => v) &&
+                    (remoteMode || gps != null) &&
+                    !locating
                 ? () async {
-                    if (!gps!.fresh(DateTime.now())) {
+                    if (!remoteMode && !gps!.fresh(DateTime.now())) {
                       await locate();
                       return;
                     }

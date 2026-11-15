@@ -1,3 +1,4 @@
+import '../data/remote_backend.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -39,7 +40,7 @@ class _EnrolState extends ConsumerState<EnrolScreen> {
   @override
   void initState() {
     super.initState();
-    if (gps == null) Future.microtask(locate);
+    if (!remoteMode && gps == null) Future.microtask(locate);
   }
 
   Future<void> locate() async {
@@ -83,7 +84,8 @@ class _EnrolState extends ConsumerState<EnrolScreen> {
 
   Future<void> next() async {
     if (!form.currentState!.validate()) return;
-    if (gps == null || (!editing && !gps!.fresh(DateTime.now()))) {
+    if (!remoteMode &&
+        (gps == null || (!editing && !gps!.fresh(DateTime.now())))) {
       await locate();
       return;
     }
@@ -96,8 +98,10 @@ class _EnrolState extends ConsumerState<EnrolScreen> {
   }
 
   Future<void> save() async {
-    if (gps == null || (!editing && frames.length != 5)) return;
-    if (!editing && !gps!.fresh(DateTime.now())) {
+    if ((!remoteMode && gps == null) || (!editing && frames.length != 5)) {
+      return;
+    }
+    if (!remoteMode && !editing && !gps!.fresh(DateTime.now())) {
       await locate();
       return;
     }
@@ -139,11 +143,26 @@ class _EnrolState extends ConsumerState<EnrolScreen> {
             .showSnackBar(SnackBar(content: Text(tr(ref, 'Saved offline'))));
         Navigator.pop(context);
       } else {
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (_) => ReceiptScreen(animal: record)));
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (_) => ReceiptScreen(
+                    animal: remoteMode
+                        ? ref
+                            .read(registerProvider)
+                            .requireValue
+                            .firstWhere((a) => a.id == record.id)
+                        : record)));
       }
-    } catch (_) {
-      if (mounted) problem(context);
+    } catch (e) {
+      if (mounted) {
+        if (remoteMode) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(e.toString())));
+        } else {
+          problem(context);
+        }
+      }
     } finally {
       if (mounted) setState(() => saving = false);
     }

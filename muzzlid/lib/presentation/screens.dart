@@ -1,3 +1,4 @@
+import '../data/remote_backend.dart';
 import 'model_status.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -38,7 +39,9 @@ class FieldScreen extends ConsumerWidget {
         body: records.when(
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (error, stack) => pageBody([
-                  Text(tr(ref, 'Unable to read local records.')),
+                  Text(remoteMode
+                      ? error.toString()
+                      : tr(ref, 'Unable to read local records.')),
                   TextButton(
                       onPressed: () => ref.invalidate(registerProvider),
                       child: Text(tr(ref, 'Try again')))
@@ -47,8 +50,12 @@ class FieldScreen extends ConsumerWidget {
                   0 => FieldHome(animals: animals),
                   1 => RegisterView(animals: animals),
                   _ => pageBody([
-                      const ModelStatusCard(),
-                      const SavedOfflineCard(),
+                      if (remoteMode)
+                        const Text(
+                            'Remote MegaDescriptor mode: backend registry authoritative')
+                      else
+                        const ModelStatusCard(),
+                      if (!remoteMode) const SavedOfflineCard(),
                       const CaptureSettings(),
                       section(context, tr(ref, 'Language')),
                       const SizedBox(height: 8),

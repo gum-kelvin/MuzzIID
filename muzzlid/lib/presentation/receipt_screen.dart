@@ -1,3 +1,4 @@
+import '../data/remote_backend.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../domain/register.dart';
@@ -14,17 +15,25 @@ class ReceiptScreen extends ConsumerWidget {
       appBar: AppBar(title: Text(tr(ref, 'Receipt'))),
       body: pageBody([
         const SizedBox(height: 24),
-        const Icon(Icons.cloud_off_outlined,
-            size: 56, color: Color(0xff986f00)),
+        const Icon(
+            remoteMode ? Icons.cloud_done_outlined : Icons.cloud_off_outlined,
+            size: 56,
+            color: Color(0xff986f00)),
         const SizedBox(height: 16),
         Center(
-            child: Text(tr(ref, 'Saved offline'),
+            child: Text(
+                remoteMode ? 'Saved on backend' : tr(ref, 'Saved offline'),
                 style: Theme.of(context).textTheme.headlineMedium)),
         const SizedBox(height: 16),
-        Center(child: badge(tr(ref, 'Pending sync'), warning: true)),
+        Center(
+            child: badge(
+                remoteMode ? 'Backend confirmed' : tr(ref, 'Pending sync'),
+                warning: !remoteMode)),
         const SizedBox(height: 16),
-        Text(tr(ref,
-            'Your record is stored on this device. Upload will require a connected sync service.')),
+        Text(remoteMode
+            ? 'Stored in the laptop SQLite registry. This is a research demonstration.'
+            : tr(ref,
+                'Your record is stored on this device. Upload will require a connected sync service.')),
         section(context, tr(ref, 'Receipt ID')),
         SelectableText(animal.receiptId),
         detail(Icons.person_outline, tr(ref, 'Owner name'), animal.owner),

@@ -39,3 +39,10 @@ backend/models/*.pth
 literature review/*
 !literature review/links.txt
 .github/modernize/
+
+# Local biometric development outputs, kept separate from reproducible manifests
+demo_backend/calibration.json
+demo_backend/evaluation.json
+demo_backend/calibration_five_image.json
+demo_backend/diagnostics.json
+demo_backend/.embedding_cache/

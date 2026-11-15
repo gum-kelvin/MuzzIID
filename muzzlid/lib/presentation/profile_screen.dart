@@ -1,3 +1,4 @@
+import '../data/remote_backend.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../domain/register.dart';
@@ -12,9 +13,31 @@ class AnimalProfileScreen extends ConsumerWidget {
   const AnimalProfileScreen({super.key, required this.animal});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (remoteMode) {
+      return ref.watch(remoteAnimalProvider(animal.id)).when(
+            loading: () => const Scaffold(
+                body: Center(child: CircularProgressIndicator())),
+            error: (e, _) => Scaffold(
+                appBar: AppBar(title: const Text('Animal record')),
+                body: Center(
+                    child: Column(mainAxisSize: MainAxisSize.min, children: [
+                  Text(e.toString()),
+                  TextButton(
+                      onPressed: () =>
+                          ref.invalidate(remoteAnimalProvider(animal.id)),
+                      child: const Text('Retry'))
+                ]))),
+            data: (record) => buildProfile(context, ref, record),
+          );
+    }
     final current = ref.watch(registerProvider).valueOrNull ?? [];
     final a =
         current.firstWhere((a) => a.id == animal.id, orElse: () => animal);
+    return buildProfile(context, ref, a);
+  }
+
+  Widget buildProfile(BuildContext context, WidgetRef ref, Animal a) {
+    final current = ref.watch(registerProvider).valueOrNull ?? [];
     return Scaffold(
         appBar: AppBar(
             title: Text(a.id, overflow: TextOverflow.ellipsis),
@@ -31,7 +54,9 @@ class AnimalProfileScreen extends ConsumerWidget {
                     final yes = await showDialog<bool>(
                         context: context,
                         builder: (c) => AlertDialog(
-                                title: Text(tr(ref, 'Delete local record?')),
+                                title: Text(remoteMode
+                                    ? 'Delete backend record?'
+                                    : tr(ref, 'Delete local record?')),
                                 actions: [
                                   TextButton(
                                       onPressed: () => Navigator.pop(c, false),

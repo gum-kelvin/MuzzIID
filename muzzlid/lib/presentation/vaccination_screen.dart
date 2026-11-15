@@ -1,3 +1,4 @@
+import '../data/remote_backend.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../domain/register.dart';
@@ -26,7 +27,7 @@ class _VaccinationState extends ConsumerState<VaccinationScreen> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(locate);
+    if (!remoteMode) Future.microtask(locate);
   }
 
   @override
@@ -58,8 +59,8 @@ class _VaccinationState extends ConsumerState<VaccinationScreen> {
   }
 
   Future<void> save() async {
-    if (selected.isEmpty || gps == null) return;
-    if (!gps!.fresh(DateTime.now())) {
+    if (selected.isEmpty || (!remoteMode && gps == null)) return;
+    if (!remoteMode && !gps!.fresh(DateTime.now())) {
       await locate();
       return;
     }
@@ -86,8 +87,15 @@ class _VaccinationState extends ConsumerState<VaccinationScreen> {
             .showSnackBar(SnackBar(content: Text(tr(ref, 'Saved offline'))));
         Navigator.pop(context);
       }
-    } catch (_) {
-      if (mounted) problem(context);
+    } catch (e) {
+      if (mounted) {
+        if (remoteMode) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(e.toString())));
+        } else {
+          problem(context);
+        }
+      }
     } finally {
       if (mounted) setState(() => saving = false);
     }
@@ -140,7 +148,10 @@ class _VaccinationState extends ConsumerState<VaccinationScreen> {
             fix: gps, loading: locating, error: gpsError, onRetry: locate),
         const SizedBox(height: 24),
         FilledButton(
-            onPressed: saving || locating || selected.isEmpty || gps == null
+            onPressed: saving ||
+                    locating ||
+                    selected.isEmpty ||
+                    (!remoteMode && gps == null)
                 ? null
                 : save,
             child: Text(tr(ref, 'Save vaccination'))),

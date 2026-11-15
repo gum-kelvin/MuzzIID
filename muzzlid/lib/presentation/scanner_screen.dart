@@ -1,3 +1,5 @@
+import '../data/remote_backend.dart';
+import 'remote_capture.dart';
 import '../data/local_model.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
@@ -47,6 +49,7 @@ class _ScannerState extends ConsumerState<ScannerScreen>
   bool detectorEnabled = false;
   Rect? detectedBox;
   Future<void> loadDetector() async {
+    if (remoteMode) return;
     try {
       final status = await AndroidEmbeddingEngine.channel
           .invokeMapMethod("detectorStatus");
@@ -229,9 +232,34 @@ class _ScannerState extends ConsumerState<ScannerScreen>
         try {
           await camera?.stopImageStream();
         } catch (_) {/* Payload is already owned. */}
-        final completedFrames =
+        var completedFrames =
             snapshotCapture(await compute(encodeCameraBurst, selectedFrames));
         if (!mounted) return;
+        if (remoteMode) {
+          final cropped = <String>[];
+          for (final frame in completedFrames) {
+            final crop = await cropMuzzle(context, frame);
+            if (!mounted) return;
+            if (crop == null) {
+              setState(() {
+                finished = false;
+                reset();
+              });
+              await open();
+              return;
+            }
+            cropped.add(crop);
+          }
+          completedFrames = cropped;
+          if (!widget.enrol) {
+            whenResumed(() => Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (_) =>
+                        RemoteIdentification(frame: cropped.first))));
+            return;
+          }
+        }
         if (widget.enrol) {
           whenResumed(() => Navigator.pop(context, completedFrames));
         } else {
@@ -313,6 +341,43 @@ class _ScannerState extends ConsumerState<ScannerScreen>
   Widget build(BuildContext context) {
     final c = camera;
     return Scaffold(
+        floatingActionButton: remoteMode && !finished
+            ? FloatingActionButton.extended(
+                label: const Text('Gallery'),
+                icon: const Icon(Icons.photo_library),
+                onPressed: () async {
+                  setState(() => finished = true);
+                  try {
+                    final selected =
+                        await galleryFrames(context, widget.enrol ? 5 : 1);
+                    if (!context.mounted) return;
+                    if (selected != null) {
+                      if (widget.enrol) {
+                        Navigator.pop(context, selected);
+                      } else {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => RemoteIdentification(
+                                    frame: selected.first)));
+                      }
+                      return;
+                    }
+                  } catch (e) {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(SnackBar(content: Text(e.toString())));
+                    }
+                  }
+                  if (context.mounted) {
+                    setState(() {
+                      finished = false;
+                      reset();
+                    });
+                    if (camera == null) await open();
+                  }
+                })
+            : null,
         backgroundColor: const Color(0xff132b20),
         appBar: AppBar(
             backgroundColor: const Color(0xff132b20),
